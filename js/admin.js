@@ -119,12 +119,16 @@
       .eq('id', user.id)
       .single()
       .then(function (result) {
+        console.log('[admin] Profile query result:', JSON.stringify(result));
+
         if (result.error || !result.data) {
+          console.error('[admin] Profile fetch failed:', result.error);
           showScreen('denied');
           return;
         }
 
         if (result.data.role !== 'admin') {
+          console.log('[admin] Role is:', result.data.role, '(not admin)');
           showScreen('denied');
           return;
         }
