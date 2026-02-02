@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Jeve Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Admin page styles (self-contained) ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --admin-bg: #f5f5f5;
+      --admin-dark: #1a1a2e;
+      --admin-accent: #c9a96e;
+      --admin-accent-dark: #a88a4e;
+      --admin-text: #333;
+      --admin-border: #ddd;
+      --admin-success: #27ae60;
+      --admin-error: #e74c3c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--admin-bg);
+      color: var(--admin-text);
+      line-height: 1.6;
+    }
+
+    /* ── Login screen ── */
+    .admin-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--admin-dark);
+    }
+
+    .admin-login-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .admin-login-box h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--admin-dark);
+    }
+
+    .admin-login-box p {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    .admin-field {
+      margin-bottom: 16px;
+    }
+
+    .admin-field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .admin-field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--admin-border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .admin-field input:focus {
+      border-color: var(--admin-accent);
+    }
+
+    .admin-login-error {
+      background: #fff0f0;
+      border: 1px solid #fcc;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      color: var(--admin-error);
+      display: none;
+    }
+
+    .admin-login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--admin-accent);
+      color: var(--admin-dark);
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .admin-login-btn:hover {
+      background: var(--admin-accent-dark);
+    }
+
+    .admin-login-btn:disabled {
+      background: #ddd;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    /* ── Dashboard ── */
+    .admin-dashboard {
+      display: none;
+    }
+
+    .admin-header {
+      background: var(--admin-dark);
+      color: #fff;
+      padding: 16px 0;
+    }
+
+    .admin-header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-header h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .admin-header h1 span {
+      color: var(--admin-accent);
+    }
+
+    .admin-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-user-name {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    .admin-logout-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .admin-logout-btn:hover {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    .admin-back-link {
+      color: var(--admin-accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .admin-back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Content area ── */
+    .admin-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .admin-section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--admin-dark);
+    }
+
+    .admin-section-desc {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    /* ── Config table ── */
+    .admin-config-table {
+      width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .admin-config-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-config-table thead {
+      background: var(--admin-dark);
+      color: #fff;
+    }
+
+    .admin-config-table th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .admin-config-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    .admin-config-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .admin-config-input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 2px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .admin-config-input:focus {
+      border-color: var(--admin-accent);
+    }
+
+    .admin-config-preview {
+      width: 60px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      background: #f5f5f5;
+    }
+
+    .admin-save-btn {
+      padding: 7px 18px;
+      background: var(--admin-accent);
+      color: var(--admin-dark);
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+
+    .admin-save-btn:hover {
+      background: var(--admin-accent-dark);
+    }
+
+    .admin-save-btn.saved {
+      background: var(--admin-success);
+      color: #fff;
+    }
+
+    /* ── Add new config row ── */
+    .admin-add-section {
+      margin-top: 32px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .admin-add-section h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--admin-dark);
+    }
+
+    .admin-add-form {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .admin-add-form .admin-field {
+      flex: 1;
+      min-width: 180px;
+      margin-bottom: 0;
+    }
+
+    .admin-add-btn {
+      padding: 12px 24px;
+      background: var(--admin-dark);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .admin-add-btn:hover {
+      background: #2a2a4e;
+    }
+
+    /* ── Toast notification ── */
+    .admin-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--admin-dark);
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 9999;
+    }
+
+    .admin-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .admin-toast.error {
+      background: var(--admin-error);
+    }
+
+    /* ── Access denied ── */
+    .admin-denied {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: var(--admin-bg);
+      text-align: center;
+    }
+
+    .admin-denied h2 {
+      font-size: 1.5rem;
+      color: var(--admin-error);
+      margin-bottom: 12px;
+    }
+
+    .admin-denied p {
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    .admin-denied a {
+      color: var(--admin-accent);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .admin-config-table { overflow-x: auto; }
+      .admin-add-form { flex-direction: column; }
+      .admin-login-box { margin: 20px; padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================ -->
+  <!-- ADMIN LOGIN SCREEN                           -->
+  <!-- ============================================ -->
+  <div class="admin-login" id="admin-login">
+    <div class="admin-login-box">
+      <h1>Admin Panel</h1>
+      <p>Sign in with your admin account to manage site photos.</p>
+      <div class="admin-login-error" id="admin-login-error"></div>
+      <form id="admin-login-form">
+        <div class="admin-field">
+          <label for="admin-email">Email</label>
+          <input type="email" id="admin-email" placeholder="admin@example.com" required autocomplete="email">
+        </div>
+        <div class="admin-field">
+          <label for="admin-password">Password</label>
+          <input type="password" id="admin-password" placeholder="Password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="admin-login-btn" id="admin-login-btn">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- ACCESS DENIED SCREEN                         -->
+  <!-- ============================================ -->
+  <div class="admin-denied" id="admin-denied">
+    <div>
+      <h2>Access Denied</h2>
+      <p>Your account does not have admin privileges.</p>
+      <a href="index.html">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- ADMIN DASHBOARD                              -->
+  <!-- ============================================ -->
+  <div class="admin-dashboard" id="admin-dashboard">
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <h1>Jeve<span>Home</span> Admin</h1>
+        <div class="admin-header-actions">
+          <a href="index.html" class="admin-back-link">Back to Site</a>
+          <span class="admin-user-name" id="admin-user-name"></span>
+          <button class="admin-logout-btn" id="admin-logout-btn">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <h2 class="admin-section-title">Photo Configuration</h2>
+      <p class="admin-section-desc">
+        Manage photos used in the timeline, hero banner, and message section.
+        Enter a relative path (e.g., <code>photos/IMG_0379.JPG</code>) and click Save.
+      </p>
+
+      <div class="admin-config-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Config Key</th>
+              <th>Photo Path</th>
+              <th>Preview</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-config-body">
+            <!-- Rows populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admin-add-section">
+        <h3>Add New Config Entry</h3>
+        <div class="admin-add-form" id="admin-add-form">
+          <div class="admin-field">
+            <label for="new-config-key">Config Key</label>
+            <input type="text" id="new-config-key" class="admin-config-input" placeholder="e.g., timeline_2026">
+          </div>
+          <div class="admin-field">
+            <label for="new-config-value">Photo Path</label>
+            <input type="text" id="new-config-value" class="admin-config-input" placeholder="e.g., photos/newphoto.jpg">
+          </div>
+          <button class="admin-add-btn" id="admin-add-btn">Add Entry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="admin-toast" id="admin-toast"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>

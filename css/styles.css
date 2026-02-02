@@ -928,3 +928,775 @@ a {
     font-size: 6rem;
   }
 }
+
+
+/* =============================================
+   JEVE HOME — FAKE LANDING PAGE
+   Distinct color palette: charcoal, warm white,
+   gold accent. No visual connection to the real
+   anniversary site.
+   ============================================= */
+
+/* ── Landing: Design Tokens ── */
+#public-landing {
+  --jh-bg: #fafafa;
+  --jh-dark: #2d3436;
+  --jh-text: #444;
+  --jh-text-light: #888;
+  --jh-accent: #c9a96e;
+  --jh-accent-dark: #a88a4e;
+  --jh-white: #fff;
+  font-family: var(--font-body);
+  color: var(--jh-text);
+  background: var(--jh-bg);
+}
+
+/* ── Landing: Nav ── */
+.jh-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background: rgba(45, 52, 54, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 16px 0;
+}
+
+.jh-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jh-logo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--jh-white);
+  text-decoration: none;
+}
+
+.jh-logo span {
+  color: var(--jh-accent);
+}
+
+.jh-nav-links {
+  list-style: none;
+  display: flex;
+  gap: 32px;
+}
+
+.jh-nav-links a {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.jh-nav-links a:hover {
+  color: var(--jh-accent);
+}
+
+.jh-signin-btn {
+  background: var(--jh-accent);
+  color: var(--jh-dark);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.jh-signin-btn:hover {
+  background: var(--jh-accent-dark);
+  transform: translateY(-1px);
+}
+
+.jh-nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+
+.jh-nav-toggle span {
+  width: 22px;
+  height: 2px;
+  background: var(--jh-white);
+  transition: all 0.3s;
+}
+
+/* ── Landing: Container ── */
+.jh-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Landing: Hero ── */
+.jh-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.jh-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, #2d3436 0%, #636e72 40%, #b2bec3 70%, #dfe6e9 100%);
+  z-index: 0;
+}
+
+.jh-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(201,169,110,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(201,169,110,0.1) 0%, transparent 50%);
+}
+
+.jh-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: var(--jh-white);
+  padding: 20px;
+  max-width: 700px;
+}
+
+.jh-hero-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--jh-accent);
+  margin-bottom: 16px;
+}
+
+.jh-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+.jh-hero-subtitle {
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.8;
+  opacity: 0.85;
+  margin-bottom: 40px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.jh-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Landing: Buttons ── */
+.jh-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  border: 2px solid transparent;
+}
+
+.jh-btn-primary {
+  background: var(--jh-accent);
+  color: var(--jh-dark);
+  border-color: var(--jh-accent);
+}
+
+.jh-btn-primary:hover {
+  background: var(--jh-accent-dark);
+  border-color: var(--jh-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(201,169,110,0.3);
+}
+
+.jh-btn-outline {
+  background: transparent;
+  color: var(--jh-white);
+  border-color: rgba(255,255,255,0.4);
+}
+
+.jh-btn-outline:hover {
+  border-color: var(--jh-white);
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+/* ── Landing: Section headers ── */
+.jh-section-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--jh-accent);
+  margin-bottom: 8px;
+}
+
+.jh-section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--jh-dark);
+  margin-bottom: 16px;
+}
+
+/* ── Landing: Services ── */
+.jh-services {
+  padding: 100px 0;
+  background: var(--jh-white);
+  text-align: center;
+}
+
+.jh-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 50px;
+}
+
+.jh-service-card {
+  background: var(--jh-bg);
+  padding: 40px 28px;
+  border-radius: 12px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.jh-service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.jh-service-icon {
+  color: var(--jh-accent);
+  margin-bottom: 20px;
+}
+
+.jh-service-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--jh-dark);
+  margin-bottom: 12px;
+}
+
+.jh-service-card p {
+  font-size: 0.95rem;
+  color: var(--jh-text-light);
+  line-height: 1.7;
+}
+
+/* ── Landing: Portfolio ── */
+.jh-portfolio {
+  padding: 100px 0;
+  background: var(--jh-bg);
+  text-align: center;
+}
+
+.jh-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 50px;
+}
+
+.jh-portfolio-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: pointer;
+}
+
+.jh-portfolio-item.jh-portfolio-large {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+.jh-portfolio-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.jh-portfolio-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(45, 52, 54, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s;
+}
+
+.jh-portfolio-overlay h4,
+.jh-portfolio-overlay p {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s;
+  color: var(--jh-white);
+}
+
+.jh-portfolio-overlay h4 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 4px;
+}
+
+.jh-portfolio-overlay p {
+  font-size: 0.85rem;
+  color: var(--jh-accent);
+}
+
+.jh-portfolio-item:hover .jh-portfolio-overlay {
+  background: rgba(45, 52, 54, 0.7);
+}
+
+.jh-portfolio-item:hover .jh-portfolio-overlay h4,
+.jh-portfolio-item:hover .jh-portfolio-overlay p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Landing: About ── */
+.jh-about {
+  padding: 100px 0;
+  background: var(--jh-white);
+}
+
+.jh-about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.jh-about-text p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--jh-text);
+  margin-bottom: 16px;
+}
+
+.jh-about-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 32px;
+}
+
+.jh-stat-number {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--jh-accent);
+}
+
+.jh-stat-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--jh-text-light);
+}
+
+.jh-about-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 16px;
+}
+
+/* ── Landing: Testimonials ── */
+.jh-testimonials {
+  padding: 100px 0;
+  background: var(--jh-dark);
+  text-align: center;
+}
+
+.jh-testimonials .jh-section-title {
+  color: var(--jh-white);
+}
+
+.jh-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 50px;
+}
+
+.jh-testimonial {
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 36px 28px;
+  text-align: left;
+}
+
+.jh-testimonial-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.jh-testimonial-author {
+  font-size: 0.85rem;
+  color: var(--jh-accent);
+  font-weight: 600;
+}
+
+/* ── Landing: Contact ── */
+.jh-contact {
+  padding: 100px 0;
+  background: var(--jh-bg);
+  text-align: center;
+}
+
+.jh-contact-subtitle {
+  font-size: 1.05rem;
+  color: var(--jh-text-light);
+  margin-bottom: 32px;
+}
+
+/* ── Landing: Footer ── */
+.jh-footer {
+  padding: 32px 0;
+  background: var(--jh-dark);
+  text-align: center;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.85rem;
+}
+
+
+/* =============================================
+   AUTH MODAL
+   ============================================= */
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.auth-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.auth-modal-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+  animation: authSlideUp 0.3s ease;
+}
+
+@keyframes authSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.auth-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.auth-modal-close:hover {
+  color: #333;
+}
+
+.auth-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2d3436;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Auth Tabs */
+.auth-tabs {
+  display: flex;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 24px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #999;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.auth-tab.active {
+  color: #2d3436;
+}
+
+.auth-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #c9a96e;
+}
+
+/* Auth Forms */
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+.auth-field {
+  margin-bottom: 18px;
+}
+
+.auth-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: #333;
+  transition: border-color 0.3s;
+  outline: none;
+}
+
+.auth-field input:focus {
+  border-color: #c9a96e;
+}
+
+.auth-error {
+  background: #fff0f0;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.88rem;
+  color: #c0392b;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: #c9a96e;
+  color: #2d3436;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.auth-submit-btn:hover {
+  background: #a88a4e;
+  transform: translateY(-1px);
+}
+
+.auth-submit-btn:disabled {
+  background: #ddd;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* =============================================
+   GREETING BAR — Top banner after sign-in
+   ============================================= */
+.greeting-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  background: #2d3436;
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 8px 0;
+}
+
+.greeting-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.greeting-text {
+  opacity: 0.9;
+}
+
+.greeting-signout {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.8);
+  padding: 4px 14px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.greeting-signout:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+/* Push the real nav down when greeting bar is visible */
+#app-content .nav {
+  top: 36px;
+}
+
+
+/* =============================================
+   LANDING PAGE RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  .jh-nav-links {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 260px;
+    height: 100vh;
+    background: #2d3436;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+  }
+
+  .jh-nav-links.open {
+    display: flex;
+  }
+
+  .jh-nav-toggle {
+    display: flex;
+  }
+
+  .jh-signin-btn {
+    display: none;
+  }
+
+  .jh-services-grid,
+  .jh-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jh-portfolio-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .jh-portfolio-item.jh-portfolio-large {
+    grid-column: span 2;
+    grid-row: span 1;
+    aspect-ratio: 16/9;
+  }
+
+  .jh-about-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .jh-about-stats {
+    gap: 24px;
+  }
+
+  .auth-modal-box {
+    margin: 20px;
+    padding: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .jh-portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jh-portfolio-item.jh-portfolio-large {
+    grid-column: span 1;
+  }
+
+  .jh-about-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

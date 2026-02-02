@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Tangs | 11 Years of Us</title>
-  <meta name="description" content="Celebrating 11 years of love, laughter, and family - The Tang Family">
+  <title>Jeve Home | Modern Interior Design</title>
+  <meta name="description" content="Jeve Home — Thoughtful interior design for modern living spaces.">
 
   <!-- Preconnect for Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,286 +14,579 @@
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 
-  <!-- Favicon (heart emoji as SVG) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💕</text></svg>">
+  <!-- Favicon — house icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
 </head>
 <body>
 
   <!-- ============================================ -->
-  <!-- NAVIGATION                                   -->
+  <!-- PUBLIC LANDING PAGE — Fake "Jeve Home"       -->
+  <!-- Shown to unauthenticated visitors only.      -->
+  <!-- No clues about the real anniversary content.  -->
   <!-- ============================================ -->
-  <nav class="nav" id="nav">
-    <div class="nav-inner">
-      <a href="#hero" class="nav-logo">The Tangs</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#story">Our Story</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#message">Message</a></li>
-      </ul>
-    </div>
-  </nav>
+  <div id="public-landing">
 
-  <!-- ============================================ -->
-  <!-- HERO SECTION — Fullscreen animated entrance  -->
-  <!-- ============================================ -->
-  <section class="hero" id="hero">
-    <!-- Floating hearts background -->
-    <div class="hero-particles" id="heroParticles"></div>
-
-    <div class="hero-overlay"></div>
-
-    <div class="hero-content">
-      <p class="hero-prelude animate-on-load" data-delay="200">Celebrating</p>
-      <h1 class="hero-title animate-on-load" data-delay="500">
-        <span class="hero-number">11</span>
-        <span class="hero-text">Years of Us</span>
-      </h1>
-      <p class="hero-subtitle animate-on-load" data-delay="800">
-        A journey of love, laughter, and a beautiful family
-      </p>
-      <div class="hero-date animate-on-load" data-delay="1100">
-        <span class="hero-date-line"></span>
-        <span>2014 — 2025</span>
-        <span class="hero-date-line"></span>
+    <!-- Landing Nav -->
+    <nav class="jh-nav">
+      <div class="jh-nav-inner">
+        <a href="#" class="jh-logo">Jeve<span>Home</span></a>
+        <ul class="jh-nav-links" id="jhNavLinks">
+          <li><a href="#jh-services">Services</a></li>
+          <li><a href="#jh-portfolio">Portfolio</a></li>
+          <li><a href="#jh-about">About</a></li>
+          <li><a href="#jh-contact">Contact</a></li>
+        </ul>
+        <button class="jh-signin-btn" data-auth-open>Sign In</button>
+        <button class="jh-nav-toggle" id="jhNavToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
-    </div>
+    </nav>
 
-    <!-- Scroll indicator -->
-    <div class="scroll-indicator animate-on-load" data-delay="1500">
-      <span>Scroll to explore</span>
-      <div class="scroll-arrow">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M5 12l7 7 7-7"/>
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================ -->
-  <!-- LOVE COUNTER SECTION                         -->
-  <!-- ============================================ -->
-  <section class="counter-section" id="counter">
-    <div class="container">
-      <div class="counter-grid">
-        <div class="counter-item scroll-reveal">
-          <span class="counter-number" data-target="11">0</span>
-          <span class="counter-label">Years Together</span>
-        </div>
-        <div class="counter-item scroll-reveal" data-delay="100">
-          <span class="counter-number" data-target="4015">0</span>
-          <span class="counter-label">Days of Love</span>
-        </div>
-        <div class="counter-item scroll-reveal" data-delay="200">
-          <span class="counter-number" data-target="2">0</span>
-          <span class="counter-label">Beautiful Kids</span>
-        </div>
-        <div class="counter-item scroll-reveal" data-delay="300">
-          <span class="counter-number" data-target="1">0</span>
-          <span class="counter-label">Forever Family</span>
+    <!-- Landing Hero -->
+    <section class="jh-hero">
+      <div class="jh-hero-bg"></div>
+      <div class="jh-hero-content">
+        <p class="jh-hero-tag">Award-Winning Design Studio</p>
+        <h1 class="jh-hero-title">Designing Spaces<br>That Inspire</h1>
+        <p class="jh-hero-subtitle">
+          We craft timeless interiors that balance beauty, comfort, and function — transforming houses into homes.
+        </p>
+        <div class="jh-hero-actions">
+          <a href="#jh-portfolio" class="jh-btn jh-btn-primary">View Our Work</a>
+          <a href="#jh-contact" class="jh-btn jh-btn-outline">Get in Touch</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============================================ -->
-  <!-- OUR STORY / TIMELINE                         -->
-  <!-- ============================================ -->
-  <section class="story-section" id="story">
-    <div class="container">
-      <div class="section-header scroll-reveal">
-        <p class="section-tag">Our Journey</p>
-        <h2 class="section-title">Our Story</h2>
-        <p class="section-subtitle">Every great love story is beautiful, but ours is our favorite</p>
+    <!-- Landing Services -->
+    <section class="jh-services" id="jh-services">
+      <div class="jh-container">
+        <p class="jh-section-tag">What We Do</p>
+        <h2 class="jh-section-title">Our Services</h2>
+        <div class="jh-services-grid">
+          <div class="jh-service-card">
+            <div class="jh-service-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h3>Interior Design</h3>
+            <p>Full-service residential and commercial interiors tailored to your lifestyle and taste.</p>
+          </div>
+          <div class="jh-service-card">
+            <div class="jh-service-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3>Home Staging</h3>
+            <p>Elevate your property's appeal with professional staging that helps spaces shine.</p>
+          </div>
+          <div class="jh-service-card">
+            <div class="jh-service-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <h3>Custom Renovation</h3>
+            <p>From kitchens to living rooms, we manage complete renovations with precision and care.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="timeline">
-        <!-- Timeline Item 1 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_0133.JPG" alt="Our beginning" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2014</span>
-              <h3 class="timeline-title">Where It All Began</h3>
-              <p class="timeline-desc">Two hearts found each other, and our love story began. The day we said "I do" was the start of our greatest adventure.</p>
+    <!-- Landing Portfolio -->
+    <section class="jh-portfolio" id="jh-portfolio">
+      <div class="jh-container">
+        <p class="jh-section-tag">Our Work</p>
+        <h2 class="jh-section-title">Featured Projects</h2>
+        <div class="jh-portfolio-grid">
+          <div class="jh-portfolio-item jh-portfolio-large">
+            <div class="jh-portfolio-placeholder" style="background:linear-gradient(135deg,#b8c6d4,#8fa4b8)"></div>
+            <div class="jh-portfolio-overlay">
+              <h4>Modern Minimalist Loft</h4>
+              <p>San Francisco, CA</p>
             </div>
           </div>
-        </div>
-
-        <!-- Timeline Item 2 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_2063.JPG" alt="Early years" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2015 — 2017</span>
-              <h3 class="timeline-title">Building Our World</h3>
-              <p class="timeline-desc">The early years of exploring life together, creating memories, and dreaming about the future side by side.</p>
+          <div class="jh-portfolio-item">
+            <div class="jh-portfolio-placeholder" style="background:linear-gradient(135deg,#d4c5a9,#b8a88a)"></div>
+            <div class="jh-portfolio-overlay">
+              <h4>Coastal Living Room</h4>
+              <p>Malibu, CA</p>
             </div>
           </div>
-        </div>
-
-        <!-- Timeline Item 3 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_3265.JPG" alt="First child" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2018</span>
-              <h3 class="timeline-title">Our Family Grew</h3>
-              <p class="timeline-desc">A tiny miracle joined our family. Our hearts expanded in ways we never imagined possible. Parenthood changed everything beautifully.</p>
+          <div class="jh-portfolio-item">
+            <div class="jh-portfolio-placeholder" style="background:linear-gradient(135deg,#a8bfae,#7d9b86)"></div>
+            <div class="jh-portfolio-overlay">
+              <h4>Urban Kitchen Remodel</h4>
+              <p>New York, NY</p>
             </div>
           </div>
-        </div>
-
-        <!-- Timeline Item 4 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_4570.JPG" alt="Growing together" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2019 — 2020</span>
-              <h3 class="timeline-title">Adventures Together</h3>
-              <p class="timeline-desc">Through every season, we grew stronger. From park days to cozy evenings at home, every moment became precious.</p>
+          <div class="jh-portfolio-item">
+            <div class="jh-portfolio-placeholder" style="background:linear-gradient(135deg,#c9b8d4,#a090b8)"></div>
+            <div class="jh-portfolio-overlay">
+              <h4>Scandinavian Bedroom</h4>
+              <p>Seattle, WA</p>
             </div>
           </div>
-        </div>
-
-        <!-- Timeline Item 5 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_5503.JPG" alt="Second child" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2021</span>
-              <h3 class="timeline-title">Double the Love</h3>
-              <p class="timeline-desc">Our family became complete with the arrival of our second little one. Four hearts beating as one.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Timeline Item 6 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_6489.JPG" alt="Family adventures" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2022 — 2024</span>
-              <h3 class="timeline-title">Making Memories</h3>
-              <p class="timeline-desc">Watching our kids grow, exploring new places, celebrating milestones — every day is a gift we cherish together.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Timeline Item 7 -->
-        <div class="timeline-item scroll-reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <div class="timeline-image-wrapper">
-              <img src="photos/IMG_7814.jpg" alt="11 years" class="timeline-image" loading="lazy">
-            </div>
-            <div class="timeline-text">
-              <span class="timeline-year">2025</span>
-              <h3 class="timeline-title">11 Years & Forever</h3>
-              <p class="timeline-desc">Eleven years of love, growth, and family. Here's to the next eleven, and all the years after that. Our story is just beginning.</p>
+          <div class="jh-portfolio-item">
+            <div class="jh-portfolio-placeholder" style="background:linear-gradient(135deg,#d4bfb8,#b89a90)"></div>
+            <div class="jh-portfolio-overlay">
+              <h4>Rustic Farmhouse</h4>
+              <p>Austin, TX</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- Landing About -->
+    <section class="jh-about" id="jh-about">
+      <div class="jh-container">
+        <div class="jh-about-grid">
+          <div class="jh-about-text">
+            <p class="jh-section-tag">About Us</p>
+            <h2 class="jh-section-title">Crafting Spaces Since 2012</h2>
+            <p>
+              At Jeve Home, we believe that great design tells a story. Our team of experienced designers
+              works closely with each client to create interiors that are not only beautiful but deeply personal.
+            </p>
+            <p>
+              From concept to completion, we handle every detail — so you can focus on enjoying the space you've always dreamed of.
+            </p>
+            <div class="jh-about-stats">
+              <div class="jh-stat">
+                <span class="jh-stat-number">150+</span>
+                <span class="jh-stat-label">Projects Completed</span>
+              </div>
+              <div class="jh-stat">
+                <span class="jh-stat-number">12</span>
+                <span class="jh-stat-label">Years Experience</span>
+              </div>
+              <div class="jh-stat">
+                <span class="jh-stat-number">98%</span>
+                <span class="jh-stat-label">Client Satisfaction</span>
+              </div>
+            </div>
+          </div>
+          <div class="jh-about-image">
+            <div class="jh-about-placeholder" style="background:linear-gradient(135deg,#e8ddd0,#c9b8a0)"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Landing Testimonials -->
+    <section class="jh-testimonials">
+      <div class="jh-container">
+        <p class="jh-section-tag">Testimonials</p>
+        <h2 class="jh-section-title">What Our Clients Say</h2>
+        <div class="jh-testimonials-grid">
+          <div class="jh-testimonial">
+            <p class="jh-testimonial-text">"Jeve Home transformed our dated living room into a modern sanctuary. Their attention to detail is unmatched."</p>
+            <p class="jh-testimonial-author">— Sarah M., Homeowner</p>
+          </div>
+          <div class="jh-testimonial">
+            <p class="jh-testimonial-text">"Professional, creative, and incredibly easy to work with. Our kitchen renovation exceeded every expectation."</p>
+            <p class="jh-testimonial-author">— David &amp; Lisa R.</p>
+          </div>
+          <div class="jh-testimonial">
+            <p class="jh-testimonial-text">"They staged our home for sale and it sold in three days. The transformation was remarkable."</p>
+            <p class="jh-testimonial-author">— Michael T., Realtor</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Landing Contact -->
+    <section class="jh-contact" id="jh-contact">
+      <div class="jh-container">
+        <p class="jh-section-tag">Get Started</p>
+        <h2 class="jh-section-title">Let's Create Something Beautiful</h2>
+        <p class="jh-contact-subtitle">Ready to transform your space? Reach out for a free consultation.</p>
+        <a href="mailto:hello@jevehome.com" class="jh-btn jh-btn-primary">Contact Us</a>
+      </div>
+    </section>
+
+    <!-- Landing Footer -->
+    <footer class="jh-footer">
+      <div class="jh-container">
+        <p>&copy; 2025 Jeve Home. All rights reserved.</p>
+      </div>
+    </footer>
+
+  </div>
+  <!-- END public-landing -->
+
 
   <!-- ============================================ -->
-  <!-- QUOTE SECTION                                -->
+  <!-- AUTH MODAL — Sign In / Sign Up               -->
   <!-- ============================================ -->
-  <section class="quote-section">
-    <div class="container">
-      <blockquote class="big-quote scroll-reveal">
-        <p class="quote-text">"The best thing to hold onto in life is each other."</p>
-        <cite class="quote-author">— Audrey Hepburn</cite>
-      </blockquote>
-    </div>
-  </section>
+  <div class="auth-modal" id="auth-modal">
+    <div class="auth-modal-box">
+      <button class="auth-modal-close" id="auth-modal-close">&times;</button>
 
-  <!-- ============================================ -->
-  <!-- PHOTO GALLERY                                -->
-  <!-- ============================================ -->
-  <section class="gallery-section" id="gallery">
-    <div class="container">
-      <div class="section-header scroll-reveal">
-        <p class="section-tag">Moments</p>
-        <h2 class="section-title">Our Gallery</h2>
-        <p class="section-subtitle">A collection of our favorite memories together</p>
+      <h2 class="auth-modal-title">Welcome Back</h2>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signin">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
       </div>
 
-      <!-- Gallery Grid — Photos loaded dynamically via JS -->
-      <div class="gallery-grid" id="galleryGrid">
-        <!-- Photos will be inserted here by JavaScript -->
-      </div>
+      <!-- Sign In Form -->
+      <form class="auth-form active" id="signin-form">
+        <div class="auth-error" style="display:none"></div>
+        <div class="auth-field">
+          <label for="signin-email">Email</label>
+          <input type="email" id="signin-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="signin-password">Password</label>
+          <input type="password" id="signin-password" placeholder="Your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="auth-submit-btn" data-label="Sign In">Sign In</button>
+      </form>
 
-      <div class="gallery-load-more scroll-reveal">
-        <button class="btn btn-outline" id="loadMoreBtn">Load More Photos</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================ -->
-  <!-- LIGHTBOX (for viewing full-size photos)      -->
-  <!-- ============================================ -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
-    <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">&#10094;</button>
-    <button class="lightbox-next" id="lightboxNext" aria-label="Next">&#10095;</button>
-    <div class="lightbox-content">
-      <img src="" alt="Photo" id="lightboxImg">
+      <!-- Sign Up Form -->
+      <form class="auth-form" id="signup-form">
+        <div class="auth-error" style="display:none"></div>
+        <div class="auth-field">
+          <label for="signup-name">Display Name</label>
+          <input type="text" id="signup-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="Min. 6 characters" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="auth-submit-btn" data-label="Create Account">Create Account</button>
+      </form>
     </div>
   </div>
 
+
   <!-- ============================================ -->
-  <!-- MESSAGE / FOOTER                             -->
+  <!-- GREETING BAR — Shown after authentication    -->
   <!-- ============================================ -->
-  <section class="message-section" id="message">
-    <div class="container">
-      <div class="message-content scroll-reveal">
-        <p class="message-script">To my love,</p>
-        <h2 class="message-title">Happy 11th Anniversary</h2>
-        <p class="message-body">
-          Thank you for 11 incredible years of love, partnership, and the beautiful family we've built together.
-          Every day with you and our kids is a blessing. I wouldn't trade a single moment.
-          Here's to forever.
+  <div class="greeting-bar" id="greeting-bar" style="display:none">
+    <div class="greeting-bar-inner">
+      <span class="greeting-text">Welcome, <strong id="greeting-name">Family Member</strong></span>
+      <button class="greeting-signout" id="sign-out-btn">Sign Out</button>
+    </div>
+  </div>
+
+
+  <!-- ============================================ -->
+  <!-- APP CONTENT — Real anniversary site          -->
+  <!-- Hidden until user is authenticated.          -->
+  <!-- ============================================ -->
+  <div id="app-content" style="display:none">
+
+    <!-- ============================================ -->
+    <!-- NAVIGATION                                   -->
+    <!-- ============================================ -->
+    <nav class="nav" id="nav">
+      <div class="nav-inner">
+        <a href="#hero" class="nav-logo">The Tangs</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#message">Message</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- HERO SECTION — Fullscreen animated entrance  -->
+    <!-- ============================================ -->
+    <section class="hero" id="hero">
+      <!-- Floating hearts background -->
+      <div class="hero-particles" id="heroParticles"></div>
+
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <p class="hero-prelude animate-on-load" data-delay="200">Celebrating</p>
+        <h1 class="hero-title animate-on-load" data-delay="500">
+          <span class="hero-number">11</span>
+          <span class="hero-text">Years of Us</span>
+        </h1>
+        <p class="hero-subtitle animate-on-load" data-delay="800">
+          A journey of love, laughter, and a beautiful family
         </p>
-        <p class="message-signature">With all my love</p>
-        <div class="message-hearts">
-          <span>💕</span>
+        <div class="hero-date animate-on-load" data-delay="1100">
+          <span class="hero-date-line"></span>
+          <span>2014 — 2025</span>
+          <span class="hero-date-line"></span>
         </div>
       </div>
-    </div>
-  </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p class="footer-text">Made with love by The Tang Family</p>
-      <p class="footer-year">2014 — 2025 | 11 Years of Us</p>
-    </div>
-  </footer>
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator animate-on-load" data-delay="1500">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </div>
+      </div>
+    </section>
 
-  <!-- Main JavaScript -->
+    <!-- ============================================ -->
+    <!-- LOVE COUNTER SECTION                         -->
+    <!-- ============================================ -->
+    <section class="counter-section" id="counter">
+      <div class="container">
+        <div class="counter-grid">
+          <div class="counter-item scroll-reveal">
+            <span class="counter-number" data-target="11">0</span>
+            <span class="counter-label">Years Together</span>
+          </div>
+          <div class="counter-item scroll-reveal" data-delay="100">
+            <span class="counter-number" data-target="4015">0</span>
+            <span class="counter-label">Days of Love</span>
+          </div>
+          <div class="counter-item scroll-reveal" data-delay="200">
+            <span class="counter-number" data-target="2">0</span>
+            <span class="counter-label">Beautiful Kids</span>
+          </div>
+          <div class="counter-item scroll-reveal" data-delay="300">
+            <span class="counter-number" data-target="1">0</span>
+            <span class="counter-label">Forever Family</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- OUR STORY / TIMELINE                         -->
+    <!-- ============================================ -->
+    <section class="story-section" id="story">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <p class="section-tag">Our Journey</p>
+          <h2 class="section-title">Our Story</h2>
+          <p class="section-subtitle">Every great love story is beautiful, but ours is our favorite</p>
+        </div>
+
+        <div class="timeline">
+          <!-- Timeline Item 1 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_0133.JPG" alt="Our beginning" class="timeline-image" data-config-key="timeline_2014" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2014</span>
+                <h3 class="timeline-title">Where It All Began</h3>
+                <p class="timeline-desc">Two hearts found each other, and our love story began. The day we said "I do" was the start of our greatest adventure.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 2 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_2063.JPG" alt="Early years" class="timeline-image" data-config-key="timeline_2015_2017" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2015 — 2017</span>
+                <h3 class="timeline-title">Building Our World</h3>
+                <p class="timeline-desc">The early years of exploring life together, creating memories, and dreaming about the future side by side.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 3 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_3265.JPG" alt="First child" class="timeline-image" data-config-key="timeline_2018" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2018</span>
+                <h3 class="timeline-title">Our Family Grew</h3>
+                <p class="timeline-desc">A tiny miracle joined our family. Our hearts expanded in ways we never imagined possible. Parenthood changed everything beautifully.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 4 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_4570.JPG" alt="Growing together" class="timeline-image" data-config-key="timeline_2019_2020" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2019 — 2020</span>
+                <h3 class="timeline-title">Adventures Together</h3>
+                <p class="timeline-desc">Through every season, we grew stronger. From park days to cozy evenings at home, every moment became precious.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 5 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_5503.JPG" alt="Second child" class="timeline-image" data-config-key="timeline_2021" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2021</span>
+                <h3 class="timeline-title">Double the Love</h3>
+                <p class="timeline-desc">Our family became complete with the arrival of our second little one. Four hearts beating as one.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 6 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_6489.JPG" alt="Family adventures" class="timeline-image" data-config-key="timeline_2022_2024" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2022 — 2024</span>
+                <h3 class="timeline-title">Making Memories</h3>
+                <p class="timeline-desc">Watching our kids grow, exploring new places, celebrating milestones — every day is a gift we cherish together.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 7 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-image-wrapper">
+                <img src="photos/IMG_7814.jpg" alt="11 years" class="timeline-image" data-config-key="timeline_2025" loading="lazy">
+              </div>
+              <div class="timeline-text">
+                <span class="timeline-year">2025</span>
+                <h3 class="timeline-title">11 Years & Forever</h3>
+                <p class="timeline-desc">Eleven years of love, growth, and family. Here's to the next eleven, and all the years after that. Our story is just beginning.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- QUOTE SECTION                                -->
+    <!-- ============================================ -->
+    <section class="quote-section">
+      <div class="container">
+        <blockquote class="big-quote scroll-reveal">
+          <p class="quote-text">"The best thing to hold onto in life is each other."</p>
+          <cite class="quote-author">— Audrey Hepburn</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHOTO GALLERY                                -->
+    <!-- ============================================ -->
+    <section class="gallery-section" id="gallery">
+      <div class="container">
+        <div class="section-header scroll-reveal">
+          <p class="section-tag">Moments</p>
+          <h2 class="section-title">Our Gallery</h2>
+          <p class="section-subtitle">A collection of our favorite memories together</p>
+        </div>
+
+        <!-- Gallery Grid — Photos loaded dynamically via JS -->
+        <div class="gallery-grid" id="galleryGrid">
+          <!-- Photos will be inserted here by JavaScript -->
+        </div>
+
+        <div class="gallery-load-more scroll-reveal">
+          <button class="btn btn-outline" id="loadMoreBtn">Load More Photos</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- LIGHTBOX (for viewing full-size photos)      -->
+    <!-- ============================================ -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+      <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">&#10094;</button>
+      <button class="lightbox-next" id="lightboxNext" aria-label="Next">&#10095;</button>
+      <div class="lightbox-content">
+        <img src="" alt="Photo" id="lightboxImg">
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MESSAGE / FOOTER                             -->
+    <!-- ============================================ -->
+    <section class="message-section" id="message">
+      <div class="container">
+        <div class="message-content scroll-reveal">
+          <p class="message-script">To my love,</p>
+          <h2 class="message-title">Happy 11th Anniversary</h2>
+          <p class="message-body">
+            Thank you for 11 incredible years of love, partnership, and the beautiful family we've built together.
+            Every day with you and our kids is a blessing. I wouldn't trade a single moment.
+            Here's to forever.
+          </p>
+          <p class="message-signature">With all my love</p>
+          <div class="message-hearts">
+            <span>💕</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">Made with love by The Tang Family</p>
+        <p class="footer-year">2014 — 2025 | 11 Years of Us</p>
+      </div>
+    </footer>
+
+  </div>
+  <!-- END app-content -->
+
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS                                       -->
+  <!-- ============================================ -->
+  <!-- Supabase JS (CDN) — must load before our scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <!-- Supabase client initialization -->
+  <script src="js/supabase-config.js"></script>
+
+  <!-- Authentication module -->
+  <script src="js/auth.js"></script>
+
+  <!-- Main app logic (gallery, animations — gated behind auth) -->
   <script src="js/main.js"></script>
+
+  <!-- Landing page mobile nav toggle -->
+  <script>
+    (function () {
+      var toggle = document.getElementById('jhNavToggle');
+      var links = document.getElementById('jhNavLinks');
+      if (toggle && links) {
+        toggle.addEventListener('click', function () {
+          links.classList.toggle('open');
+          toggle.classList.toggle('active');
+        });
+      }
+    })();
+  </script>
+
 </body>
 </html>

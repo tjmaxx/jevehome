@@ -1,6 +1,11 @@
 /* ============================================
    THE TANGS — 11 Years of Us
    Main JavaScript
+   ============================================
+   MODIFIED: init() is now exposed as window.initApp()
+   and called by auth.js after successful login.
+   Added: loadSiteConfig() fetches photo paths from
+   Supabase site_config table (with hardcoded fallbacks).
    ============================================ */
 
 (function () {
@@ -79,9 +84,20 @@
   const PHOTOS = shuffle(ALL_PHOTOS);
   const PHOTOS_PER_PAGE = 12;
   let photosLoaded = 0;
+  let appInitialized = false;
 
-  // ── DOM Ready ───────────────────────────────
-  document.addEventListener('DOMContentLoaded', init);
+  // ── Expose init as window.initApp ─────────
+  // Called by auth.js after successful authentication.
+  // Prevents running gallery/animations when content is hidden.
+  window.initApp = function () {
+    if (appInitialized) return;
+    appInitialized = true;
+
+    // Load site config from Supabase, then initialize UI
+    loadSiteConfig().then(function () {
+      init();
+    });
+  };
 
   function init() {
     initNav();
@@ -94,11 +110,63 @@
     initSmoothScroll();
   }
 
+  // ── Load site config from Supabase ────────
+  // Fetches photo paths for timeline/hero/message from the
+  // site_config table. Falls back to hardcoded defaults if
+  // Supabase is unavailable or not configured.
+  function loadSiteConfig() {
+    var sb = window.supabaseClient;
+    if (!sb) return Promise.resolve();
+
+    return sb.from('site_config')
+      .select('config_key, config_value')
+      .then(function (result) {
+        if (result.error || !result.data) return;
+
+        var config = {};
+        result.data.forEach(function (row) {
+          config[row.config_key] = row.config_value;
+        });
+
+        // Apply timeline image overrides
+        var configImages = document.querySelectorAll('[data-config-key]');
+        configImages.forEach(function (img) {
+          var key = img.getAttribute('data-config-key');
+          if (config[key]) {
+            img.src = config[key];
+          }
+        });
+
+        // Apply hero background override
+        if (config.hero_bg_photo) {
+          var heroEl = document.querySelector('#app-content .hero');
+          if (heroEl) {
+            heroEl.style.backgroundImage =
+              'linear-gradient(135deg, rgba(44,36,32,0.7) 0%, rgba(200,144,126,0.4) 100%), url(' + config.hero_bg_photo + ')';
+          }
+        }
+
+        // Apply message background override
+        if (config.message_bg_photo) {
+          var msgEl = document.querySelector('#app-content .message-section');
+          if (msgEl) {
+            msgEl.style.backgroundImage =
+              'linear-gradient(135deg, rgba(44,36,32,0.85) 0%, rgba(200,144,126,0.5) 100%), url(' + config.message_bg_photo + ')';
+          }
+        }
+      })
+      .catch(function () {
+        // Silently fall back to hardcoded defaults
+      });
+  }
+
   // ── Navigation ──────────────────────────────
   function initNav() {
     const nav = document.getElementById('nav');
     const toggle = document.getElementById('navToggle');
     const links = document.getElementById('navLinks');
+
+    if (!nav || !toggle || !links) return;
 
     // Scroll state
     let lastScroll = 0;
@@ -171,7 +239,6 @@
     var container = document.getElementById('heroParticles');
     if (!container) return;
 
-    var hearts = ['<3', '<3', '<3'];
     var heartSymbols = ['\u2665', '\u2764', '\u2661'];
 
     function createHeart() {
@@ -254,7 +321,6 @@
   function animateCounter(el) {
     var target = parseInt(el.getAttribute('data-target'), 10);
     var duration = 2000;
-    var start = 0;
     var startTime = null;
 
     function step(timestamp) {
