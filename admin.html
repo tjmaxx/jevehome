@@ -402,6 +402,63 @@
       .gallery-order-grid { grid-template-columns: repeat(3, 1fr) !important; }
     }
 
+    /* ── Read When Editor ── */
+    .readwhen-editor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .readwhen-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .readwhen-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .readwhen-card-header .emoji {
+      font-size: 1.8rem;
+    }
+
+    .readwhen-card-header h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--admin-dark);
+    }
+
+    .readwhen-card .admin-field textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+    }
+
+    .readwhen-card .admin-field textarea:focus {
+      border-color: var(--admin-accent);
+    }
+
+    .readwhen-card .admin-save-btn {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .readwhen-editor-grid { grid-template-columns: 1fr !important; }
+    }
+
     /* ── Timeline Editor ── */
     .timeline-editor-grid {
       display: grid;
@@ -633,6 +690,17 @@
         </p>
         <div class="timeline-editor-grid" id="timeline-editor-grid">
           <!-- Year cards populated by JS -->
+        </div>
+      </div>
+
+      <!-- Read This When Messages Section -->
+      <div class="admin-add-section" style="margin-top:48px;">
+        <h2 class="admin-section-title">"Read This When..." Messages</h2>
+        <p class="admin-section-desc">
+          Customize supportive messages for the hidden "Read This When..." feature. Leave blank to use defaults.
+        </p>
+        <div class="readwhen-editor-grid" id="readwhen-editor-grid">
+          <!-- Message cards populated by JS -->
         </div>
       </div>
 

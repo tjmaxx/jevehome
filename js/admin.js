@@ -9,6 +9,18 @@
 (function () {
   'use strict';
 
+  // ── Read When defaults ───────────────────────
+  var READWHEN_OPTIONS = [
+    { key: 'sad', emoji: '😢', label: 'Feel sad' },
+    { key: 'stressed', emoji: '😰', label: 'Feel stressed' },
+    { key: 'lonely', emoji: '🥺', label: 'Feel lonely' },
+    { key: 'doubt', emoji: '😔', label: 'Doubt yourself' },
+    { key: 'angry', emoji: '😤', label: 'Feel angry at me' },
+    { key: 'happy', emoji: '😊', label: 'Want to smile' },
+    { key: 'love', emoji: '💕', label: 'Need to feel loved' },
+    { key: 'miss', emoji: '🫂', label: 'Miss me' }
+  ];
+
   // ── Timeline defaults (2015-2026) ────────────
   var TIMELINE_DEFAULTS = {
     2015: { title: 'Married!', desc: 'Our February wedding — the beginning of forever.' },
@@ -177,6 +189,7 @@
         showScreen('dashboard');
         loadConfigEntries();
         loadTimelineEditor();
+        loadReadWhenEditor();
         loadGalleryOrder();
       })
       .catch(function () {
@@ -570,6 +583,140 @@
 
         setTimeout(function () {
           btn.textContent = 'Save ' + year;
+          btn.classList.remove('saved');
+        }, 2000);
+      });
+  }
+
+  // =============================================
+  // READ THIS WHEN EDITOR
+  // =============================================
+
+  function loadReadWhenEditor() {
+    var sb = window.supabaseClient;
+    var grid = document.getElementById('readwhen-editor-grid');
+    if (!grid) return;
+
+    // First load existing config
+    var configPromise = sb ? sb.from('site_config')
+      .select('config_key, config_value')
+      .like('config_key', 'readwhen_%')
+      .then(function (result) {
+        var config = {};
+        if (result.data) {
+          result.data.forEach(function (row) {
+            config[row.config_key] = row.config_value;
+          });
+        }
+        return config;
+      }) : Promise.resolve({});
+
+    configPromise.then(function (config) {
+      grid.innerHTML = '';
+
+      READWHEN_OPTIONS.forEach(function (opt) {
+        var messageKey = 'readwhen_' + opt.key + '_message';
+
+        var card = document.createElement('div');
+        card.className = 'readwhen-card';
+
+        // Header
+        var header = document.createElement('div');
+        header.className = 'readwhen-card-header';
+
+        var emoji = document.createElement('span');
+        emoji.className = 'emoji';
+        emoji.textContent = opt.emoji;
+
+        var title = document.createElement('h4');
+        title.textContent = opt.label;
+
+        header.appendChild(emoji);
+        header.appendChild(title);
+        card.appendChild(header);
+
+        // Message textarea
+        var field = document.createElement('div');
+        field.className = 'admin-field';
+
+        var label = document.createElement('label');
+        label.textContent = 'Custom message (leave blank for default)';
+        label.style.fontSize = '0.75rem';
+        label.style.display = 'block';
+        label.style.marginBottom = '6px';
+        label.style.color = '#666';
+
+        var textarea = document.createElement('textarea');
+        textarea.value = config[messageKey] || '';
+        textarea.placeholder = 'Enter a supportive message...';
+
+        field.appendChild(label);
+        field.appendChild(textarea);
+        card.appendChild(field);
+
+        // Save button
+        var saveBtn = document.createElement('button');
+        saveBtn.className = 'admin-save-btn';
+        saveBtn.textContent = 'Save';
+        saveBtn.addEventListener('click', function () {
+          saveReadWhenMessage(opt.key, textarea.value, saveBtn);
+        });
+        card.appendChild(saveBtn);
+
+        grid.appendChild(card);
+      });
+    });
+  }
+
+  function saveReadWhenMessage(key, message, btn) {
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var configKey = 'readwhen_' + key + '_message';
+
+    // If message is empty, delete the config entry (use default)
+    if (!message.trim()) {
+      sb.from('site_config')
+        .delete()
+        .eq('config_key', configKey)
+        .then(function (result) {
+          btn.disabled = false;
+          if (result.error) {
+            btn.textContent = 'Save';
+            showToast('Failed to reset: ' + result.error.message, true);
+            return;
+          }
+          btn.textContent = 'Reset!';
+          showToast('Message reset to default.');
+          loadConfigEntries();
+
+          setTimeout(function () {
+            btn.textContent = 'Save';
+          }, 2000);
+        });
+      return;
+    }
+
+    // Upsert the message
+    sb.from('site_config')
+      .upsert({ config_key: configKey, config_value: message.trim() }, { onConflict: 'config_key' })
+      .then(function (result) {
+        btn.disabled = false;
+        if (result.error) {
+          btn.textContent = 'Save';
+          showToast('Save failed: ' + result.error.message, true);
+          return;
+        }
+        btn.textContent = 'Saved!';
+        btn.classList.add('saved');
+        showToast('Message saved.');
+        loadConfigEntries();
+
+        setTimeout(function () {
+          btn.textContent = 'Save';
           btn.classList.remove('saved');
         }, 2000);
       });

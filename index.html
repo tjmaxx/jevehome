@@ -282,6 +282,66 @@
     <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
   </button>
 
+  <!-- ============================================ -->
+  <!-- READ THIS WHEN — Hidden supportive messages  -->
+  <!-- ============================================ -->
+  <button id="read-when-trigger" style="display:none" aria-label="Read this when...">
+    <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+  </button>
+
+  <!-- Read This When Menu -->
+  <div id="read-when-menu" class="read-when-menu">
+    <div class="read-when-menu-content">
+      <button class="read-when-close" aria-label="Close">&times;</button>
+      <h3>Read this when you...</h3>
+      <div class="read-when-options">
+        <button class="read-when-option" data-key="sad">
+          <span class="read-when-icon">😢</span>
+          <span>Feel sad</span>
+        </button>
+        <button class="read-when-option" data-key="stressed">
+          <span class="read-when-icon">😰</span>
+          <span>Feel stressed</span>
+        </button>
+        <button class="read-when-option" data-key="lonely">
+          <span class="read-when-icon">🥺</span>
+          <span>Feel lonely</span>
+        </button>
+        <button class="read-when-option" data-key="doubt">
+          <span class="read-when-icon">😔</span>
+          <span>Doubt yourself</span>
+        </button>
+        <button class="read-when-option" data-key="angry">
+          <span class="read-when-icon">😤</span>
+          <span>Feel angry at me</span>
+        </button>
+        <button class="read-when-option" data-key="happy">
+          <span class="read-when-icon">😊</span>
+          <span>Want to smile</span>
+        </button>
+        <button class="read-when-option" data-key="love">
+          <span class="read-when-icon">💕</span>
+          <span>Need to feel loved</span>
+        </button>
+        <button class="read-when-option" data-key="miss">
+          <span class="read-when-icon">🫂</span>
+          <span>Miss me</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Read This When Message Modal -->
+  <div id="read-when-modal" class="read-when-modal">
+    <div class="read-when-modal-content">
+      <button class="read-when-modal-close" aria-label="Close">&times;</button>
+      <div class="read-when-modal-icon"></div>
+      <h3 class="read-when-modal-title"></h3>
+      <p class="read-when-modal-message"></p>
+      <p class="read-when-modal-signature">— Jia 💕</p>
+    </div>
+  </div>
+
 
   <!-- ============================================ -->
   <!-- APP CONTENT — Real anniversary site          -->

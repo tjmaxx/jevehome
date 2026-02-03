@@ -114,6 +114,7 @@
     initSmoothScroll();
     initLogoEasterEgg();
     initKonamiCode();
+    initReadWhen();
   }
 
   // ── Load site config from Supabase ────────
@@ -970,6 +971,165 @@
       if (e.key === 'Escape') closeOverlay();
     };
     document.addEventListener('keydown', escHandler);
+  }
+
+  // ── Read This When... ──────────────────────
+  var readWhenMessages = {};
+  var READ_WHEN_DEFAULTS = {
+    sad: {
+      title: 'When You Feel Sad',
+      icon: '🤗',
+      message: 'My love, sadness is temporary, but my love for you is forever. Whatever is weighing on your heart, remember that you are stronger than you know. I believe in you, and I\'m always here to hold you through the hard times. You are not alone — you have me, Eric, and Ella. We love you more than words can say.'
+    },
+    stressed: {
+      title: 'When You Feel Stressed',
+      icon: '💆',
+      message: 'Take a deep breath, my love. Whatever is causing you stress right now, we will figure it out together. You don\'t have to carry everything alone. Let me share your burden. Remember: no deadline, no task, no problem is more important than your peace. Take a break. I\'ve got you.'
+    },
+    lonely: {
+      title: 'When You Feel Lonely',
+      icon: '🫂',
+      message: 'Even when I\'m not physically next to you, my heart is always with you. Close your eyes and feel my arms around you. You are never truly alone — you are loved beyond measure. Our family\'s love surrounds you every moment of every day. I\'m just a call away.'
+    },
+    doubt: {
+      title: 'When You Doubt Yourself',
+      icon: '⭐',
+      message: 'Stop right there. The woman I married is incredible, capable, and amazing. You\'ve accomplished so much — raising two beautiful kids, building our home, and being the heart of our family. Don\'t let doubt cloud your vision. I see how extraordinary you are, and I need you to see it too.'
+    },
+    angry: {
+      title: 'When You\'re Angry at Me',
+      icon: '😅',
+      message: 'I\'m sorry. Whatever I did (or didn\'t do), I\'m truly sorry. You have every right to be upset, and I want to make it right. My love for you is bigger than any argument. Please give me a chance to understand and to do better. You mean everything to me.'
+    },
+    happy: {
+      title: 'A Little Smile for You',
+      icon: '😄',
+      message: 'Did you know that you\'re the most beautiful person in the world to me? That your laugh is my favorite sound? That watching you with Eric and Ella fills my heart with so much joy? You came here to smile, so here it is: I love you, I adore you, and I\'m so grateful you\'re mine. 💕'
+    },
+    love: {
+      title: 'You Are So Loved',
+      icon: '💖',
+      message: 'I love you. Not just today, but every single day since the moment I met you. You are the first thing I think about in the morning and the last thing on my mind at night. You gave me Eric and Ella. You gave me a home. You gave me everything. You are loved, cherished, and adored — always and forever.'
+    },
+    miss: {
+      title: 'When You Miss Me',
+      icon: '💑',
+      message: 'I miss you too, always. Even when we\'re apart, you\'re in my thoughts constantly. Look at our photos, remember our laughs, and know that I\'m counting the moments until I can hold you again. Distance means nothing when someone means everything. I\'ll be with you soon, my love.'
+    }
+  };
+
+  function initReadWhen() {
+    var trigger = document.getElementById('read-when-trigger');
+    var menu = document.getElementById('read-when-menu');
+    var modal = document.getElementById('read-when-modal');
+
+    if (!trigger || !menu || !modal) return;
+
+    // Show the trigger button
+    trigger.style.display = 'flex';
+
+    // Load custom messages from config
+    loadReadWhenMessages();
+
+    // Open menu
+    trigger.addEventListener('click', function () {
+      menu.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close menu
+    var menuClose = menu.querySelector('.read-when-close');
+    if (menuClose) {
+      menuClose.addEventListener('click', closeMenu);
+    }
+    menu.addEventListener('click', function (e) {
+      if (e.target === menu) closeMenu();
+    });
+
+    function closeMenu() {
+      menu.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Option buttons
+    var options = menu.querySelectorAll('.read-when-option');
+    options.forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        var key = this.getAttribute('data-key');
+        closeMenu();
+        setTimeout(function () {
+          showReadWhenMessage(key);
+        }, 200);
+      });
+    });
+
+    // Close modal
+    var modalClose = modal.querySelector('.read-when-modal-close');
+    if (modalClose) {
+      modalClose.addEventListener('click', closeModal);
+    }
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Escape key closes both
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (modal.classList.contains('active')) {
+          closeModal();
+        } else if (menu.classList.contains('active')) {
+          closeMenu();
+        }
+      }
+    });
+  }
+
+  function loadReadWhenMessages() {
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    sb.from('site_config')
+      .select('config_key, config_value')
+      .like('config_key', 'readwhen_%')
+      .then(function (result) {
+        if (result.data) {
+          result.data.forEach(function (row) {
+            // Keys like: readwhen_sad_title, readwhen_sad_message
+            readWhenMessages[row.config_key] = row.config_value;
+          });
+        }
+      })
+      .catch(function () {
+        // Silently use defaults
+      });
+  }
+
+  function showReadWhenMessage(key) {
+    var modal = document.getElementById('read-when-modal');
+    if (!modal) return;
+
+    var defaults = READ_WHEN_DEFAULTS[key] || {
+      title: 'A Message for You',
+      icon: '💕',
+      message: 'You are loved, always.'
+    };
+
+    // Check for custom messages from config
+    var title = readWhenMessages['readwhen_' + key + '_title'] || defaults.title;
+    var icon = readWhenMessages['readwhen_' + key + '_icon'] || defaults.icon;
+    var message = readWhenMessages['readwhen_' + key + '_message'] || defaults.message;
+
+    modal.querySelector('.read-when-modal-icon').textContent = icon;
+    modal.querySelector('.read-when-modal-title').textContent = title;
+    modal.querySelector('.read-when-modal-message').textContent = message;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
 
 })();
