@@ -18,52 +18,52 @@
   // ── Timeline defaults (2015-2026) ────────────
   var TIMELINE_DEFAULTS = {
     2015: {
-      title: 'Where It All Began',
-      desc: 'Jia & Vickey — two hearts found each other, and our love story began. The start of our greatest adventure.'
+      title: 'Married!',
+      desc: 'Jia & Vickey — our February wedding marked the beginning of forever. Two hearts, one journey.'
     },
     2016: {
-      title: 'Building Our World',
-      desc: 'Exploring life together, creating memories, and dreaming about the future side by side.'
-    },
-    2017: {
-      title: 'Growing Together',
-      desc: 'Learning, loving, and laying the foundation for the family we would become.'
-    },
-    2018: {
       title: 'Eric Tang Arrives',
       desc: 'A tiny miracle joined our family. Our hearts expanded in ways we never imagined possible. Parenthood changed everything beautifully.'
     },
-    2019: {
+    2017: {
       title: 'Adventures as Three',
-      desc: 'Through every season, we grew stronger. From park days to cozy evenings at home, every moment became precious.'
+      desc: 'Exploring life together as a family, creating memories, and watching Eric discover the world.'
+    },
+    2018: {
+      title: 'Growing Together',
+      desc: 'Learning, loving, and building the foundation for our growing family.'
+    },
+    2019: {
+      title: 'Ella Tang Joins Us',
+      desc: 'Our family became complete with the arrival of our second little one. Four hearts beating as one.'
     },
     2020: {
       title: 'Staying Strong',
       desc: 'A challenging year brought us closer. Home became our sanctuary, family our strength.'
     },
     2021: {
-      title: 'Ella Tang Joins Us',
-      desc: 'Our family became complete with the arrival of our second little one. Four hearts beating as one.'
-    },
-    2022: {
       title: 'A Family of Four',
       desc: 'Watching our kids grow together, filling our home with laughter and love.'
     },
-    2023: {
+    2022: {
       title: 'Making Memories',
-      desc: 'Exploring new places, celebrating milestones — every day is a gift we cherish together.'
+      desc: 'From park days to cozy evenings at home, every moment became precious.'
+    },
+    2023: {
+      title: 'Exploring New Places',
+      desc: 'Family adventures near and far — every day is a gift we cherish together.'
     },
     2024: {
       title: 'Stronger Than Ever',
       desc: 'Nearly a decade of love, growth, and family. Building traditions that will last generations.'
     },
     2025: {
-      title: 'Married!',
-      desc: 'Our February wedding — officially sealing our love after years of building a life together.'
+      title: 'A Decade of Love',
+      desc: 'Ten incredible years together. Looking back at how far we\'ve come, grateful for every moment.'
     },
     2026: {
       title: '11 Years & Forever',
-      desc: 'Eleven years of love, growth, and family. Here\'s to the next eleven, and all the years after that. Our story is just beginning.'
+      desc: 'Eleven years of marriage, love, and family. Here\'s to the next eleven, and all the years after that.'
     }
   };
 

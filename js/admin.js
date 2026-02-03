@@ -11,17 +11,17 @@
 
   // ── Timeline defaults (2015-2026) ────────────
   var TIMELINE_DEFAULTS = {
-    2015: { title: 'Where It All Began', desc: 'Jia & Vickey — two hearts found each other.' },
-    2016: { title: 'Building Our World', desc: 'Exploring life together.' },
-    2017: { title: 'Growing Together', desc: 'Learning, loving, and building foundations.' },
-    2018: { title: 'Eric Tang Arrives', desc: 'A tiny miracle joined our family.' },
-    2019: { title: 'Adventures as Three', desc: 'Every moment became precious.' },
+    2015: { title: 'Married!', desc: 'Our February wedding — the beginning of forever.' },
+    2016: { title: 'Eric Tang Arrives', desc: 'A tiny miracle joined our family.' },
+    2017: { title: 'Adventures as Three', desc: 'Exploring life together as a family.' },
+    2018: { title: 'Growing Together', desc: 'Learning, loving, and building foundations.' },
+    2019: { title: 'Ella Tang Joins Us', desc: 'Four hearts beating as one.' },
     2020: { title: 'Staying Strong', desc: 'Home became our sanctuary.' },
-    2021: { title: 'Ella Tang Joins Us', desc: 'Four hearts beating as one.' },
-    2022: { title: 'A Family of Four', desc: 'Filling our home with laughter.' },
-    2023: { title: 'Making Memories', desc: 'Every day is a gift.' },
+    2021: { title: 'A Family of Four', desc: 'Filling our home with laughter.' },
+    2022: { title: 'Making Memories', desc: 'Every moment became precious.' },
+    2023: { title: 'Exploring New Places', desc: 'Family adventures near and far.' },
     2024: { title: 'Stronger Than Ever', desc: 'Building traditions.' },
-    2025: { title: 'Married!', desc: 'Our February wedding.' },
+    2025: { title: 'A Decade of Love', desc: 'Ten incredible years together.' },
     2026: { title: '11 Years & Forever', desc: 'Here\'s to forever.' }
   };
 
