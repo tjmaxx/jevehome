@@ -6,6 +6,8 @@
    and called by auth.js after successful login.
    Added: loadSiteConfig() fetches photo paths from
    Supabase site_config table (with hardcoded fallbacks).
+   Photos are loaded via Supabase Storage signed URLs
+   using getPhotoUrl() / getPhotoUrls() from storage.js.
    ============================================ */
 
 (function () {
@@ -128,32 +130,54 @@
           config[row.config_key] = row.config_value;
         });
 
-        // Apply timeline image overrides
+        // Collect all filenames that need signed URLs
         var configImages = document.querySelectorAll('[data-config-key]');
+        var urlPromises = [];
+
+        // Timeline images: resolve filenames to signed URLs
         configImages.forEach(function (img) {
           var key = img.getAttribute('data-config-key');
-          if (config[key]) {
-            img.src = config[key];
+          var filename = config[key];
+          if (filename) {
+            urlPromises.push(
+              getPhotoUrl(filename).then(function (url) {
+                if (url) img.src = url;
+              })
+            );
           }
         });
 
-        // Apply hero background override
+        // Hero background
         if (config.hero_bg_photo) {
-          var heroEl = document.querySelector('#app-content .hero');
-          if (heroEl) {
-            heroEl.style.backgroundImage =
-              'linear-gradient(135deg, rgba(44,36,32,0.7) 0%, rgba(200,144,126,0.4) 100%), url(' + config.hero_bg_photo + ')';
-          }
+          urlPromises.push(
+            getPhotoUrl(config.hero_bg_photo).then(function (url) {
+              if (url) {
+                var heroEl = document.querySelector('#app-content .hero');
+                if (heroEl) {
+                  heroEl.style.backgroundImage =
+                    'linear-gradient(135deg, rgba(44,36,32,0.7) 0%, rgba(200,144,126,0.4) 100%), url(' + url + ')';
+                }
+              }
+            })
+          );
         }
 
-        // Apply message background override
+        // Message background
         if (config.message_bg_photo) {
-          var msgEl = document.querySelector('#app-content .message-section');
-          if (msgEl) {
-            msgEl.style.backgroundImage =
-              'linear-gradient(135deg, rgba(44,36,32,0.85) 0%, rgba(200,144,126,0.5) 100%), url(' + config.message_bg_photo + ')';
-          }
+          urlPromises.push(
+            getPhotoUrl(config.message_bg_photo).then(function (url) {
+              if (url) {
+                var msgEl = document.querySelector('#app-content .message-section');
+                if (msgEl) {
+                  msgEl.style.backgroundImage =
+                    'linear-gradient(135deg, rgba(44,36,32,0.85) 0%, rgba(200,144,126,0.5) 100%), url(' + url + ')';
+                }
+              }
+            })
+          );
         }
+
+        return Promise.all(urlPromises);
       })
       .catch(function () {
         // Silently fall back to hardcoded defaults
@@ -359,35 +383,41 @@
     var grid = document.getElementById('galleryGrid');
     if (!grid) return;
 
+    var start = photosLoaded;
     var end = Math.min(photosLoaded + PHOTOS_PER_PAGE, PHOTOS.length);
-
-    for (var i = photosLoaded; i < end; i++) {
-      var item = createGalleryItem(PHOTOS[i], i);
-      grid.appendChild(item);
-    }
+    var batch = PHOTOS.slice(start, end);
 
     photosLoaded = end;
 
-    // Hide button if all loaded
-    if (photosLoaded >= PHOTOS.length) {
-      var btn = document.getElementById('loadMoreBtn');
-      if (btn) btn.style.display = 'none';
-    }
+    // Fetch signed URLs for the batch, then create gallery items
+    getPhotoUrls(batch).then(function (urls) {
+      for (var i = 0; i < batch.length; i++) {
+        var item = createGalleryItem(batch[i], start + i, urls[i]);
+        grid.appendChild(item);
+      }
 
-    // Re-init scroll-reveal for new items
-    initScrollReveal();
+      // Hide button if all loaded
+      if (photosLoaded >= PHOTOS.length) {
+        var btn = document.getElementById('loadMoreBtn');
+        if (btn) btn.style.display = 'none';
+      }
+
+      // Re-init scroll-reveal for new items
+      initScrollReveal();
+    });
   }
 
-  function createGalleryItem(filename, index) {
+  function createGalleryItem(filename, index, signedUrl) {
     var item = document.createElement('div');
     item.className = 'gallery-item scroll-reveal';
 
     var img = document.createElement('img');
-    img.src = 'photos/' + filename;
+    img.src = signedUrl || '';
     img.alt = 'Family photo';
     img.className = 'gallery-image';
     img.loading = 'lazy';
     img.setAttribute('data-index', index);
+    img.setAttribute('data-filename', filename);
 
     // Handle load errors gracefully
     img.onerror = function () {
@@ -467,7 +497,9 @@
     var img = document.getElementById('lightboxImg');
 
     currentLightboxIndex = index;
-    img.src = 'photos/' + PHOTOS[index];
+    getPhotoUrl(PHOTOS[index]).then(function (url) {
+      img.src = url || '';
+    });
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -483,10 +515,10 @@
     currentLightboxIndex = (currentLightboxIndex + direction + total) % total;
     var img = document.getElementById('lightboxImg');
     img.style.opacity = '0';
-    setTimeout(function () {
-      img.src = 'photos/' + PHOTOS[currentLightboxIndex];
+    getPhotoUrl(PHOTOS[currentLightboxIndex]).then(function (url) {
+      img.src = url || '';
       img.style.opacity = '1';
-    }, 200);
+    });
   }
 
   // ── Smooth scroll ───────────────────────────

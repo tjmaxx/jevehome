@@ -213,9 +213,16 @@
     input.setAttribute('data-id', row.id);
     input.setAttribute('data-original', row.config_value);
 
-    // Update preview on input change
+    // Update preview on input change — resolve filename to signed URL
     input.addEventListener('input', function () {
-      preview.src = this.value;
+      var val = this.value.trim();
+      if (val) {
+        getPhotoUrl(val).then(function (url) {
+          preview.src = url || val;
+        });
+      } else {
+        preview.src = '';
+      }
     });
 
     tdValue.appendChild(input);
@@ -225,7 +232,7 @@
     var tdPreview = document.createElement('td');
     var preview = document.createElement('img');
     preview.className = 'admin-config-preview';
-    preview.src = row.config_value;
+    preview.src = '';
     preview.alt = 'Preview';
     preview.onerror = function () {
       this.style.background = '#fee';
@@ -235,6 +242,13 @@
       this.style.background = '';
       this.style.border = '1px solid #eee';
     };
+    // Load signed URL for initial preview
+    if (row.config_value && typeof getPhotoUrl === 'function') {
+      getPhotoUrl(row.config_value).then(function (url) {
+        if (url) preview.src = url;
+      });
+    }
+
     tdPreview.appendChild(preview);
     tr.appendChild(tdPreview);
 
