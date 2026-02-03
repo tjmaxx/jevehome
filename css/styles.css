@@ -1163,6 +1163,7 @@ a {
     gap: 30px;
     transition: right 0.4s ease;
     box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    z-index: 1000;
   }
 
   .nav-links.active {
