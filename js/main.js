@@ -112,6 +112,7 @@
     initGallery();
     initLightbox();
     initSmoothScroll();
+    initLogoEasterEgg();
   }
 
   // ── Load site config from Supabase ────────
@@ -634,6 +635,136 @@
         }
       });
     });
+  }
+
+  // ── Hidden Easter Egg on Logo ──────────────
+  function initLogoEasterEgg() {
+    var logo = document.querySelector('#app-content .nav-logo');
+    if (!logo) return;
+
+    var clickCount = 0;
+    var clickTimer = null;
+
+    var messages = {
+      7: {
+        title: 'You found a secret!',
+        text: 'Keep clicking if you want to know more...',
+        icon: '✨'
+      },
+      14: {
+        title: 'To my beautiful wife',
+        text: 'Vickey, you are the best thing that ever happened to me. Every day with you is a gift.',
+        icon: '💕'
+      },
+      21: {
+        title: 'My Forever Promise',
+        text: 'Vickey, thank you for 11 amazing years. For choosing me, for Eric & Ella, for everything. I fall more in love with you every single day. Here\'s to forever, my love.',
+        icon: '💍'
+      }
+    };
+
+    logo.addEventListener('click', function (e) {
+      // Don't prevent default - let it scroll to hero
+      clickCount++;
+
+      // Reset counter after 3 seconds of no clicks
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(function () {
+        clickCount = 0;
+      }, 3000);
+
+      // Check for milestone
+      if (messages[clickCount]) {
+        showEasterEggMessage(messages[clickCount]);
+      }
+    });
+  }
+
+  function showEasterEggMessage(msg) {
+    // Remove existing message if any
+    var existing = document.getElementById('easter-egg-message');
+    if (existing) existing.remove();
+
+    // Create overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'easter-egg-message';
+    overlay.style.cssText =
+      'position:fixed;inset:0;z-index:10001;' +
+      'background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);' +
+      'display:flex;align-items:center;justify-content:center;' +
+      'opacity:0;transition:opacity 0.4s ease;';
+
+    // Create message box
+    var box = document.createElement('div');
+    box.style.cssText =
+      'background:linear-gradient(135deg,#faf7f4,#f5ece3);' +
+      'border-radius:20px;padding:48px 40px;max-width:420px;' +
+      'text-align:center;transform:scale(0.9);' +
+      'transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);' +
+      'box-shadow:0 25px 60px rgba(0,0,0,0.3);';
+
+    var icon = document.createElement('div');
+    icon.style.cssText = 'font-size:3rem;margin-bottom:16px;';
+    icon.textContent = msg.icon;
+
+    var title = document.createElement('h3');
+    title.style.cssText =
+      'font-family:"Playfair Display",Georgia,serif;' +
+      'font-size:1.6rem;color:#3a2e28;margin-bottom:16px;';
+    title.textContent = msg.title;
+
+    var text = document.createElement('p');
+    text.style.cssText =
+      'font-family:"Inter",-apple-system,sans-serif;' +
+      'font-size:1.05rem;line-height:1.8;color:#5a4e48;margin-bottom:24px;';
+    text.textContent = msg.text;
+
+    var closeBtn = document.createElement('button');
+    closeBtn.style.cssText =
+      'background:#c8907e;color:#fff;border:none;' +
+      'padding:12px 32px;border-radius:30px;' +
+      'font-family:"Inter",-apple-system,sans-serif;' +
+      'font-size:0.9rem;font-weight:600;cursor:pointer;' +
+      'transition:background 0.3s,transform 0.2s;';
+    closeBtn.textContent = 'Close';
+    closeBtn.onmouseover = function() { this.style.background = '#a86f5e'; };
+    closeBtn.onmouseout = function() { this.style.background = '#c8907e'; };
+
+    box.appendChild(icon);
+    box.appendChild(title);
+    box.appendChild(text);
+    box.appendChild(closeBtn);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    // Animate in
+    requestAnimationFrame(function () {
+      overlay.style.opacity = '1';
+      box.style.transform = 'scale(1)';
+    });
+
+    // Close handlers
+    function closeMessage() {
+      overlay.style.opacity = '0';
+      box.style.transform = 'scale(0.9)';
+      setTimeout(function () {
+        overlay.remove();
+      }, 400);
+    }
+
+    closeBtn.addEventListener('click', closeMessage);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closeMessage();
+    });
+
+    // Close on Escape
+    var escHandler = function (e) {
+      if (e.key === 'Escape') {
+        closeMessage();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
   }
 
 })();
