@@ -113,6 +113,7 @@
     initLightbox();
     initSmoothScroll();
     initLogoEasterEgg();
+    initKonamiCode();
   }
 
   // ── Load site config from Supabase ────────
@@ -763,6 +764,210 @@
         closeMessage();
         document.removeEventListener('keydown', escHandler);
       }
+    };
+    document.addEventListener('keydown', escHandler);
+  }
+
+  // ── Konami Code Easter Egg ─────────────────
+  // ↑ ↑ ↓ ↓ ← → ← → B A
+  function initKonamiCode() {
+    var konamiCode = [
+      'ArrowUp', 'ArrowUp',
+      'ArrowDown', 'ArrowDown',
+      'ArrowLeft', 'ArrowRight',
+      'ArrowLeft', 'ArrowRight',
+      'KeyB', 'KeyA'
+    ];
+    var konamiIndex = 0;
+    var konamiTimer = null;
+
+    document.addEventListener('keydown', function (e) {
+      // Don't trigger if typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      // Check if key matches next in sequence
+      if (e.code === konamiCode[konamiIndex]) {
+        konamiIndex++;
+
+        // Reset after 2 seconds of no input
+        clearTimeout(konamiTimer);
+        konamiTimer = setTimeout(function () {
+          konamiIndex = 0;
+        }, 2000);
+
+        // Complete sequence!
+        if (konamiIndex === konamiCode.length) {
+          konamiIndex = 0;
+          clearTimeout(konamiTimer);
+          triggerKonamiEasterEgg();
+        }
+      } else {
+        // Wrong key, reset
+        konamiIndex = 0;
+      }
+    });
+  }
+
+  function triggerKonamiEasterEgg() {
+    // Create heart explosion container
+    var heartsContainer = document.createElement('div');
+    heartsContainer.id = 'konami-hearts';
+    heartsContainer.style.cssText =
+      'position:fixed;inset:0;z-index:10000;pointer-events:none;overflow:hidden;';
+    document.body.appendChild(heartsContainer);
+
+    // Spawn many floating hearts
+    var heartSymbols = ['❤️', '💕', '💖', '💗', '💓', '💝', '💘', '💞', '🥰', '😍'];
+    var heartCount = 50;
+
+    for (var i = 0; i < heartCount; i++) {
+      (function (index) {
+        setTimeout(function () {
+          createKonamiHeart(heartsContainer, heartSymbols);
+        }, index * 60);
+      })(i);
+    }
+
+    // Show romantic message after hearts start
+    setTimeout(function () {
+      showKonamiMessage();
+    }, 800);
+
+    // Clean up hearts container after animation
+    setTimeout(function () {
+      heartsContainer.remove();
+    }, 8000);
+  }
+
+  function createKonamiHeart(container, symbols) {
+    var heart = document.createElement('div');
+    var symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    var startX = Math.random() * 100;
+    var size = Math.random() * 30 + 20;
+    var duration = Math.random() * 3 + 4;
+    var drift = (Math.random() - 0.5) * 200;
+
+    heart.textContent = symbol;
+    heart.style.cssText =
+      'position:absolute;' +
+      'bottom:-50px;' +
+      'left:' + startX + '%;' +
+      'font-size:' + size + 'px;' +
+      'opacity:0;' +
+      'transform:translateX(0) rotate(0deg);' +
+      'transition:none;';
+
+    container.appendChild(heart);
+
+    // Animate using requestAnimationFrame for smooth motion
+    var startTime = null;
+    var startY = window.innerHeight + 50;
+
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = (timestamp - startTime) / (duration * 1000);
+
+      if (progress < 1) {
+        var y = startY - (progress * (window.innerHeight + 150));
+        var x = drift * Math.sin(progress * Math.PI * 2);
+        var rotation = progress * 360;
+        var opacity = progress < 0.1 ? progress * 10 : (progress > 0.8 ? (1 - progress) * 5 : 1);
+
+        heart.style.transform = 'translateX(' + x + 'px) rotate(' + rotation + 'deg)';
+        heart.style.bottom = (window.innerHeight - y) + 'px';
+        heart.style.opacity = Math.min(opacity, 0.9);
+
+        requestAnimationFrame(animate);
+      } else {
+        heart.remove();
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  function showKonamiMessage() {
+    // Remove existing if any
+    var existing = document.getElementById('konami-message');
+    if (existing) existing.remove();
+
+    // Create overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'konami-message';
+    overlay.style.cssText =
+      'position:fixed;inset:0;z-index:10002;' +
+      'background:rgba(58,46,40,0.9);backdrop-filter:blur(12px);' +
+      'display:flex;align-items:center;justify-content:center;' +
+      'opacity:0;transition:opacity 0.6s ease;';
+
+    // Create content
+    var content = document.createElement('div');
+    content.style.cssText =
+      'text-align:center;color:#faf7f4;padding:40px;' +
+      'max-width:500px;transform:scale(0.9);' +
+      'transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1);';
+
+    var hearts = document.createElement('div');
+    hearts.style.cssText = 'font-size:3rem;margin-bottom:20px;';
+    hearts.textContent = '💕';
+
+    var title = document.createElement('h2');
+    title.style.cssText =
+      'font-family:"Great Vibes",cursive;' +
+      'font-size:3rem;margin-bottom:20px;' +
+      'color:#d4a76a;';
+    title.textContent = 'My Dearest Vickey';
+
+    var message = document.createElement('p');
+    message.style.cssText =
+      'font-family:"Playfair Display",Georgia,serif;' +
+      'font-size:1.3rem;line-height:2;font-style:italic;' +
+      'margin-bottom:24px;';
+    message.textContent =
+      'In a world of 8 billion people, I found you. ' +
+      'In a lifetime of moments, I choose you — every single day. ' +
+      'You are my home, my heart, my everything.';
+
+    var signature = document.createElement('p');
+    signature.style.cssText =
+      'font-family:"Great Vibes",cursive;' +
+      'font-size:2rem;color:#e8b4b8;';
+    signature.textContent = 'Forever yours, Jia';
+
+    var closeHint = document.createElement('p');
+    closeHint.style.cssText =
+      'margin-top:32px;font-size:0.85rem;opacity:0.5;' +
+      'font-family:"Inter",-apple-system,sans-serif;';
+    closeHint.textContent = 'Click anywhere to close';
+
+    content.appendChild(hearts);
+    content.appendChild(title);
+    content.appendChild(message);
+    content.appendChild(signature);
+    content.appendChild(closeHint);
+    overlay.appendChild(content);
+    document.body.appendChild(overlay);
+
+    // Animate in
+    requestAnimationFrame(function () {
+      overlay.style.opacity = '1';
+      content.style.transform = 'scale(1)';
+    });
+
+    // Close handler
+    function closeOverlay() {
+      overlay.style.opacity = '0';
+      content.style.transform = 'scale(0.9)';
+      setTimeout(function () {
+        overlay.remove();
+      }, 600);
+      document.removeEventListener('keydown', escHandler);
+    }
+
+    overlay.addEventListener('click', closeOverlay);
+
+    var escHandler = function (e) {
+      if (e.key === 'Escape') closeOverlay();
     };
     document.addEventListener('keydown', escHandler);
   }
