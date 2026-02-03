@@ -140,6 +140,7 @@
     initLogoEasterEgg();
     initKonamiCode();
     initReadWhen();
+    initODOW();
   }
 
   // ── Load site config from Supabase ────────
@@ -1234,6 +1235,204 @@
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+  }
+
+  // ── ODOW (One Day One Word) ───────────────────
+  // Love notes from 2011-2012, displayed as animated sticky notes
+  var odowEntries = [];
+  var odowCurrentIndex = 0;
+  var odowAutoplayTimer = null;
+  var odowIsPlaying = false;
+
+  function initODOW() {
+    var sticky = document.getElementById('odowSticky');
+    var textEl = document.getElementById('odowText');
+    var dateEl = document.getElementById('odowDate');
+    var prevBtn = document.getElementById('odowPrev');
+    var nextBtn = document.getElementById('odowNext');
+    var shuffleBtn = document.getElementById('odowShuffle');
+    var autoplayBtn = document.getElementById('odowAutoplay');
+    var currentEl = document.getElementById('odowCurrent');
+    var totalEl = document.getElementById('odowTotal');
+
+    if (!sticky || !textEl) return;
+
+    // Load entries from Supabase
+    loadODOWEntries().then(function () {
+      if (odowEntries.length === 0) return;
+
+      // Start at random position
+      odowCurrentIndex = Math.floor(Math.random() * odowEntries.length);
+      renderODOW();
+
+      // Navigation
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+          navigateODOW(-1);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          navigateODOW(1);
+        });
+      }
+
+      // Shuffle to random
+      if (shuffleBtn) {
+        shuffleBtn.addEventListener('click', function () {
+          var newIndex = Math.floor(Math.random() * odowEntries.length);
+          if (newIndex === odowCurrentIndex && odowEntries.length > 1) {
+            newIndex = (newIndex + 1) % odowEntries.length;
+          }
+          odowCurrentIndex = newIndex;
+          animateODOWTransition('random');
+        });
+      }
+
+      // Autoplay
+      if (autoplayBtn) {
+        autoplayBtn.addEventListener('click', function () {
+          if (odowIsPlaying) {
+            stopODOWAutoplay();
+          } else {
+            startODOWAutoplay();
+          }
+        });
+      }
+
+      // Touch swipe support
+      var touchStartX = 0;
+      var touchEndX = 0;
+      sticky.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      sticky.addEventListener('touchend', function (e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleODOWSwipe();
+      }, { passive: true });
+
+      function handleODOWSwipe() {
+        var diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) { // Min swipe distance
+          if (diff > 0) {
+            navigateODOW(1); // Swipe left = next
+          } else {
+            navigateODOW(-1); // Swipe right = prev
+          }
+        }
+      }
+    });
+  }
+
+  function loadODOWEntries() {
+    var sb = window.supabaseClient;
+    if (!sb) return Promise.resolve();
+
+    return sb.from('odow')
+      .select('id, content, note_date')
+      .order('note_date', { ascending: true })
+      .then(function (result) {
+        if (result.data && result.data.length > 0) {
+          odowEntries = result.data;
+        }
+      })
+      .catch(function (err) {
+        console.error('Error loading ODOW:', err);
+      });
+  }
+
+  function renderODOW() {
+    var textEl = document.getElementById('odowText');
+    var dateEl = document.getElementById('odowDate');
+    var currentEl = document.getElementById('odowCurrent');
+    var totalEl = document.getElementById('odowTotal');
+
+    if (!textEl || odowEntries.length === 0) return;
+
+    var entry = odowEntries[odowCurrentIndex];
+    textEl.textContent = entry.content;
+    dateEl.textContent = formatODOWDate(entry.note_date);
+
+    if (currentEl) currentEl.textContent = odowCurrentIndex + 1;
+    if (totalEl) totalEl.textContent = odowEntries.length;
+  }
+
+  function formatODOWDate(dateStr) {
+    if (!dateStr) return '';
+    // Parse various date formats
+    var parts;
+    if (dateStr.includes('/')) {
+      parts = dateStr.split('/');
+      // Handle MM/DD/YYYY or M/D/YY
+      var month = parseInt(parts[0], 10);
+      var day = parseInt(parts[1], 10);
+      var year = parts[2];
+      if (year.length === 2) {
+        year = '20' + year;
+      }
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return months[month - 1] + ' ' + day + ', ' + year;
+    }
+    return dateStr;
+  }
+
+  function navigateODOW(direction) {
+    var newIndex = odowCurrentIndex + direction;
+    if (newIndex < 0) newIndex = odowEntries.length - 1;
+    if (newIndex >= odowEntries.length) newIndex = 0;
+
+    odowCurrentIndex = newIndex;
+    animateODOWTransition(direction > 0 ? 'next' : 'prev');
+  }
+
+  function animateODOWTransition(direction) {
+    var sticky = document.getElementById('odowSticky');
+    if (!sticky) return;
+
+    // Slide out
+    sticky.classList.remove('slide-in');
+    if (direction === 'next' || direction === 'random') {
+      sticky.classList.add('slide-out-left');
+    } else {
+      sticky.classList.add('slide-out-right');
+    }
+
+    // After animation, update content and slide in
+    setTimeout(function () {
+      renderODOW();
+      sticky.classList.remove('slide-out-left', 'slide-out-right');
+      sticky.classList.add('slide-in');
+
+      // Clean up class after animation
+      setTimeout(function () {
+        sticky.classList.remove('slide-in');
+      }, 400);
+    }, 280);
+  }
+
+  function startODOWAutoplay() {
+    var autoplayBtn = document.getElementById('odowAutoplay');
+    if (odowIsPlaying) return;
+
+    odowIsPlaying = true;
+    if (autoplayBtn) autoplayBtn.classList.add('playing');
+
+    // Auto-advance every 5 seconds
+    odowAutoplayTimer = setInterval(function () {
+      navigateODOW(1);
+    }, 5000);
+  }
+
+  function stopODOWAutoplay() {
+    var autoplayBtn = document.getElementById('odowAutoplay');
+    odowIsPlaying = false;
+    if (autoplayBtn) autoplayBtn.classList.remove('playing');
+
+    if (odowAutoplayTimer) {
+      clearInterval(odowAutoplayTimer);
+      odowAutoplayTimer = null;
+    }
   }
 
 })();

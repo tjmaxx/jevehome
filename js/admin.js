@@ -192,6 +192,7 @@
         loadReadWhenEditor();
         loadCaptionEditor();
         loadGalleryOrder();
+        initODOWAdmin();
       })
       .catch(function () {
         showScreen('denied');
@@ -1069,6 +1070,249 @@
         renderGalleryGrid();
         loadConfigEntries();
         showToast('Gallery order reset to random.');
+      });
+  }
+
+  // =============================================
+  // ODOW (One Day One Word) ADMIN
+  // =============================================
+
+  var odowEntries = [];
+  var odowLoaded = 0;
+  var ODOW_PER_PAGE = 20;
+  var odowSearchTerm = '';
+
+  function initODOWAdmin() {
+    var addBtn = document.getElementById('odow-add-btn');
+    var searchInput = document.getElementById('odow-search');
+    var loadMoreBtn = document.getElementById('odow-load-more-btn');
+
+    if (addBtn) {
+      addBtn.addEventListener('click', addODOWEntry);
+    }
+
+    if (searchInput) {
+      var searchTimeout;
+      searchInput.addEventListener('input', function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function () {
+          odowSearchTerm = searchInput.value.trim().toLowerCase();
+          odowLoaded = 0;
+          loadODOWEntries(true);
+        }, 300);
+      });
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', function () {
+        loadODOWEntries(false);
+      });
+    }
+
+    // Initial load
+    loadODOWEntries(true);
+  }
+
+  function loadODOWEntries(reset) {
+    var sb = window.supabaseClient;
+    var list = document.getElementById('odow-entries-list');
+    var countEl = document.getElementById('odow-count');
+    var loadMoreBtn = document.getElementById('odow-load-more-btn');
+
+    if (!sb || !list) return;
+
+    if (reset) {
+      odowLoaded = 0;
+      list.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">Loading...</p>';
+    }
+
+    var query = sb.from('odow')
+      .select('id, content, note_date', { count: 'exact' })
+      .order('note_date', { ascending: true })
+      .range(odowLoaded, odowLoaded + ODOW_PER_PAGE - 1);
+
+    if (odowSearchTerm) {
+      query = query.ilike('content', '%' + odowSearchTerm + '%');
+    }
+
+    query.then(function (result) {
+      if (result.error) {
+        list.innerHTML = '<p style="text-align:center;color:#e74c3c;">Error loading entries</p>';
+        return;
+      }
+
+      var entries = result.data || [];
+      var total = result.count || 0;
+
+      if (countEl) countEl.textContent = total;
+
+      if (reset) {
+        list.innerHTML = '';
+      }
+
+      if (entries.length === 0 && odowLoaded === 0) {
+        list.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">No entries found</p>';
+        if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+        return;
+      }
+
+      entries.forEach(function (entry) {
+        var card = createODOWCard(entry);
+        list.appendChild(card);
+      });
+
+      odowLoaded += entries.length;
+
+      // Show/hide load more button
+      if (loadMoreBtn) {
+        loadMoreBtn.style.display = odowLoaded < total ? 'inline-block' : 'none';
+      }
+    });
+  }
+
+  function createODOWCard(entry) {
+    var card = document.createElement('div');
+    card.className = 'odow-entry-card';
+    card.setAttribute('data-id', entry.id);
+
+    card.innerHTML =
+      '<div class="odow-entry-content">' + escapeHtml(entry.content) + '</div>' +
+      '<div class="odow-entry-date">' + escapeHtml(entry.note_date) + '</div>' +
+      '<div class="odow-entry-actions">' +
+        '<button class="odow-edit-btn" title="Edit">&#9998;</button>' +
+        '<button class="odow-delete-btn" title="Delete">&#10005;</button>' +
+      '</div>' +
+      '<div class="odow-entry-edit">' +
+        '<textarea class="edit-content" rows="3">' + escapeHtml(entry.content) + '</textarea>' +
+        '<input type="text" class="edit-date" value="' + escapeHtml(entry.note_date) + '">' +
+        '<div class="odow-entry-edit-actions">' +
+          '<button class="save-edit-btn">Save</button>' +
+          '<button class="cancel-edit-btn">Cancel</button>' +
+        '</div>' +
+      '</div>';
+
+    // Edit button
+    card.querySelector('.odow-edit-btn').addEventListener('click', function () {
+      card.classList.add('editing');
+    });
+
+    // Delete button
+    card.querySelector('.odow-delete-btn').addEventListener('click', function () {
+      if (confirm('Delete this entry?')) {
+        deleteODOWEntry(entry.id, card);
+      }
+    });
+
+    // Save edit
+    card.querySelector('.save-edit-btn').addEventListener('click', function () {
+      var newContent = card.querySelector('.edit-content').value.trim();
+      var newDate = card.querySelector('.edit-date').value.trim();
+      if (newContent) {
+        updateODOWEntry(entry.id, newContent, newDate, card);
+      }
+    });
+
+    // Cancel edit
+    card.querySelector('.cancel-edit-btn').addEventListener('click', function () {
+      card.classList.remove('editing');
+      card.querySelector('.edit-content').value = entry.content;
+      card.querySelector('.edit-date').value = entry.note_date;
+    });
+
+    return card;
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function addODOWEntry() {
+    var sb = window.supabaseClient;
+    var contentEl = document.getElementById('odow-new-content');
+    var dateEl = document.getElementById('odow-new-date');
+    var btn = document.getElementById('odow-add-btn');
+
+    if (!sb || !contentEl || !dateEl) return;
+
+    var content = contentEl.value.trim();
+    var noteDate = dateEl.value.trim();
+
+    if (!content) {
+      showToast('Please enter note content', true);
+      return;
+    }
+
+    if (!noteDate) {
+      // Default to today's date
+      var today = new Date();
+      noteDate = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Adding...';
+
+    sb.from('odow')
+      .insert({ content: content, note_date: noteDate })
+      .then(function (result) {
+        btn.disabled = false;
+        btn.textContent = 'Add Entry';
+
+        if (result.error) {
+          showToast('Failed to add: ' + result.error.message, true);
+          return;
+        }
+
+        showToast('Entry added!');
+        contentEl.value = '';
+        dateEl.value = '';
+        loadODOWEntries(true);
+      });
+  }
+
+  function updateODOWEntry(id, content, noteDate, card) {
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    sb.from('odow')
+      .update({ content: content, note_date: noteDate })
+      .eq('id', id)
+      .then(function (result) {
+        if (result.error) {
+          showToast('Failed to update: ' + result.error.message, true);
+          return;
+        }
+
+        showToast('Entry updated!');
+        card.classList.remove('editing');
+        card.querySelector('.odow-entry-content').textContent = content;
+        card.querySelector('.odow-entry-date').textContent = noteDate;
+      });
+  }
+
+  function deleteODOWEntry(id, card) {
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    sb.from('odow')
+      .delete()
+      .eq('id', id)
+      .then(function (result) {
+        if (result.error) {
+          showToast('Failed to delete: ' + result.error.message, true);
+          return;
+        }
+
+        showToast('Entry deleted.');
+        card.remove();
+
+        // Update count
+        var countEl = document.getElementById('odow-count');
+        if (countEl) {
+          var current = parseInt(countEl.textContent, 10) || 0;
+          countEl.textContent = Math.max(0, current - 1);
+        }
       });
   }
 

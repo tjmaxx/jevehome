@@ -578,6 +578,190 @@
       margin-top: 8px;
     }
 
+    /* ── ODOW Admin ── */
+    .odow-admin-section {
+      margin-top: 40px;
+    }
+
+    .odow-add-form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+
+    .odow-add-form textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--admin-border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .odow-add-form textarea:focus {
+      outline: none;
+      border-color: var(--admin-accent);
+    }
+
+    .odow-list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .odow-search input {
+      padding: 8px 14px;
+      border: 2px solid var(--admin-border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      width: 200px;
+    }
+
+    .odow-search input:focus {
+      outline: none;
+      border-color: var(--admin-accent);
+    }
+
+    .odow-entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .odow-entry-card {
+      background: linear-gradient(135deg, #fffef5 0%, #fff9e6 100%);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: box-shadow 0.2s;
+    }
+
+    .odow-entry-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .odow-entry-content {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #3a3530;
+      margin-bottom: 8px;
+      white-space: pre-wrap;
+    }
+
+    .odow-entry-date {
+      font-size: 0.8rem;
+      color: #8a7e78;
+      font-style: italic;
+    }
+
+    .odow-entry-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .odow-entry-card:hover .odow-entry-actions {
+      opacity: 1;
+    }
+
+    .odow-entry-actions button {
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.2s;
+    }
+
+    .odow-entry-actions .odow-edit-btn {
+      background: var(--admin-accent);
+      color: #fff;
+    }
+
+    .odow-entry-actions .odow-delete-btn {
+      background: var(--admin-error);
+      color: #fff;
+    }
+
+    .odow-entry-card.editing {
+      background: #fff;
+      border: 2px solid var(--admin-accent);
+    }
+
+    .odow-entry-card.editing .odow-entry-content {
+      display: none;
+    }
+
+    .odow-entry-card.editing .odow-entry-edit {
+      display: block;
+    }
+
+    .odow-entry-edit {
+      display: none;
+    }
+
+    .odow-entry-edit textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      resize: vertical;
+    }
+
+    .odow-entry-edit input {
+      padding: 8px 10px;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      width: 150px;
+    }
+
+    .odow-entry-edit-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .odow-entry-edit-actions button {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .odow-entry-edit-actions .save-edit-btn {
+      background: var(--admin-success);
+      color: #fff;
+    }
+
+    .odow-entry-edit-actions .cancel-edit-btn {
+      background: #eee;
+      color: #666;
+    }
+
     /* ── Gallery Ordering ── */
     .gallery-order-section {
       margin-top: 40px;
@@ -769,6 +953,42 @@
         </div>
         <div style="text-align:center;margin-top:20px;">
           <button class="admin-save-btn" id="load-more-captions-btn">Load More Photos</button>
+        </div>
+      </div>
+
+      <!-- ODOW Management Section -->
+      <div class="admin-add-section odow-admin-section">
+        <h2 class="admin-section-title">One Day One Word (ODOW)</h2>
+        <p class="admin-section-desc">
+          Manage daily love notes. These are displayed as sticky notes on the main page.
+        </p>
+
+        <!-- Add new entry -->
+        <div class="odow-add-form">
+          <h3 style="font-size:0.95rem;margin-bottom:12px;color:#666;">Add New Entry</h3>
+          <div class="admin-field">
+            <label for="odow-new-content">Note Content</label>
+            <textarea id="odow-new-content" rows="3" placeholder="Write your love note here..."></textarea>
+          </div>
+          <div class="admin-field">
+            <label for="odow-new-date">Date (e.g., 8/28/2011)</label>
+            <input type="text" id="odow-new-date" placeholder="MM/DD/YYYY">
+          </div>
+          <button class="admin-save-btn" id="odow-add-btn">Add Entry</button>
+        </div>
+
+        <!-- Entry list -->
+        <div class="odow-list-header">
+          <h3 style="font-size:0.95rem;color:#666;">All Entries (<span id="odow-count">0</span>)</h3>
+          <div class="odow-search">
+            <input type="text" id="odow-search" placeholder="Search entries...">
+          </div>
+        </div>
+        <div class="odow-entries-list" id="odow-entries-list">
+          <!-- Entries populated by JS -->
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+          <button class="admin-save-btn" id="odow-load-more-btn">Load More</button>
         </div>
       </div>
 
