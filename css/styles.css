@@ -170,6 +170,15 @@ a {
   background: var(--color-text);
 }
 
+/* Hide mobile-only menu items on desktop */
+.nav-signout-mobile {
+  display: none;
+}
+
+.nav-backdrop {
+  display: none;
+}
+
 
 /* =============================================
    HERO SECTION
@@ -922,6 +931,7 @@ a {
   }
 
   .nav-signout-mobile {
+    display: block;
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid rgba(0,0,0,0.1);
@@ -931,7 +941,7 @@ a {
     color: var(--color-accent-dark) !important;
   }
 
-  /* Nav backdrop */
+  /* Nav backdrop - show on mobile */
   .nav-backdrop {
     display: none;
     position: fixed;
@@ -1115,6 +1125,15 @@ a {
   height: 2px;
   background: var(--jh-white);
   transition: all 0.3s;
+}
+
+/* Hide mobile-only menu items on desktop */
+.jh-nav-signin-mobile {
+  display: none;
+}
+
+.jh-nav-backdrop {
+  display: none;
 }
 
 /* ── Landing: Container ── */
@@ -1985,6 +2004,7 @@ a {
   }
 
   .jh-nav-signin-mobile {
+    display: block;
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid rgba(255,255,255,0.2);
@@ -1995,7 +2015,7 @@ a {
     font-weight: 600;
   }
 
-  /* Landing nav backdrop */
+  /* Landing nav backdrop - show on mobile */
   .jh-nav-backdrop {
     display: none;
     position: fixed;
