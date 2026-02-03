@@ -190,6 +190,7 @@
         loadConfigEntries();
         loadTimelineEditor();
         loadReadWhenEditor();
+        loadCaptionEditor();
         loadGalleryOrder();
       })
       .catch(function () {
@@ -715,6 +716,162 @@
         showToast('Message saved.');
         loadConfigEntries();
 
+        setTimeout(function () {
+          btn.textContent = 'Save';
+          btn.classList.remove('saved');
+        }, 2000);
+      });
+  }
+
+  // =============================================
+  // PHOTO CAPTIONS EDITOR
+  // =============================================
+
+  var captionPhotosLoaded = 0;
+  var CAPTIONS_PER_PAGE = 12;
+  var captionConfig = {};
+
+  var DEFAULT_CAPTIONS = [
+    "A moment I'll treasure forever",
+    "My heart smiles looking at this",
+    "Pure happiness captured",
+    "Love in its purest form",
+    "This is what forever looks like",
+    "My favorite people in one frame",
+    "Memories we'll never forget",
+    "The best days of our lives",
+    "Where my heart belongs",
+    "Love, laughter, and us"
+  ];
+
+  function loadCaptionEditor() {
+    var sb = window.supabaseClient;
+    var grid = document.getElementById('caption-editor-grid');
+    var loadMoreBtn = document.getElementById('load-more-captions-btn');
+    if (!grid) return;
+
+    // Reset
+    captionPhotosLoaded = 0;
+    grid.innerHTML = '';
+
+    // Load existing captions from config
+    var configPromise = sb ? sb.from('site_config')
+      .select('config_key, config_value')
+      .like('config_key', 'caption_%')
+      .then(function (result) {
+        captionConfig = {};
+        if (result.data) {
+          result.data.forEach(function (row) {
+            var filename = row.config_key.replace('caption_', '');
+            captionConfig[filename] = row.config_value;
+          });
+        }
+        return captionConfig;
+      }) : Promise.resolve({});
+
+    configPromise.then(function () {
+      loadMoreCaptions();
+    });
+
+    // Load more button
+    if (loadMoreBtn) {
+      loadMoreBtn.onclick = function () {
+        loadMoreCaptions();
+      };
+    }
+  }
+
+  function loadMoreCaptions() {
+    var grid = document.getElementById('caption-editor-grid');
+    var loadMoreBtn = document.getElementById('load-more-captions-btn');
+    if (!grid) return;
+
+    var allPhotos = window.ALL_PHOTOS || [];
+    var start = captionPhotosLoaded;
+    var end = Math.min(start + CAPTIONS_PER_PAGE, allPhotos.length);
+    var batch = allPhotos.slice(start, end);
+
+    captionPhotosLoaded = end;
+
+    batch.forEach(function (filename, i) {
+      var card = document.createElement('div');
+      card.className = 'caption-card';
+
+      var img = document.createElement('img');
+      img.className = 'caption-card-image';
+      img.alt = filename;
+      if (typeof getPhotoUrl === 'function') {
+        getPhotoUrl(filename).then(function (url) {
+          if (url) img.src = url;
+        });
+      }
+      card.appendChild(img);
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.value = captionConfig[filename] || '';
+      input.placeholder = DEFAULT_CAPTIONS[(start + i) % DEFAULT_CAPTIONS.length];
+      card.appendChild(input);
+
+      var saveBtn = document.createElement('button');
+      saveBtn.className = 'admin-save-btn';
+      saveBtn.textContent = 'Save';
+      saveBtn.addEventListener('click', function () {
+        saveCaption(filename, input.value, saveBtn);
+      });
+      card.appendChild(saveBtn);
+
+      grid.appendChild(card);
+    });
+
+    // Hide load more button if all loaded
+    if (loadMoreBtn && captionPhotosLoaded >= allPhotos.length) {
+      loadMoreBtn.style.display = 'none';
+    }
+  }
+
+  function saveCaption(filename, caption, btn) {
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var configKey = 'caption_' + filename;
+
+    // If caption is empty, delete (use default)
+    if (!caption.trim()) {
+      sb.from('site_config')
+        .delete()
+        .eq('config_key', configKey)
+        .then(function (result) {
+          btn.disabled = false;
+          if (result.error) {
+            btn.textContent = 'Save';
+            showToast('Failed: ' + result.error.message, true);
+            return;
+          }
+          btn.textContent = 'Reset!';
+          delete captionConfig[filename];
+          showToast('Caption reset to default.');
+          setTimeout(function () { btn.textContent = 'Save'; }, 2000);
+        });
+      return;
+    }
+
+    sb.from('site_config')
+      .upsert({ config_key: configKey, config_value: caption.trim() }, { onConflict: 'config_key' })
+      .then(function (result) {
+        btn.disabled = false;
+        if (result.error) {
+          btn.textContent = 'Save';
+          showToast('Failed: ' + result.error.message, true);
+          return;
+        }
+        btn.textContent = 'Saved!';
+        btn.classList.add('saved');
+        captionConfig[filename] = caption.trim();
+        showToast('Caption saved.');
         setTimeout(function () {
           btn.textContent = 'Save';
           btn.classList.remove('saved');

@@ -459,6 +459,60 @@
       .readwhen-editor-grid { grid-template-columns: 1fr !important; }
     }
 
+    /* ── Caption Editor ── */
+    .caption-editor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .caption-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .caption-card-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background: #f5f5f5;
+    }
+
+    .caption-card input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .caption-card input:focus {
+      border-color: var(--admin-accent);
+    }
+
+    .caption-card input::placeholder {
+      font-style: italic;
+      color: #aaa;
+    }
+
+    .caption-card .admin-save-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .caption-editor-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
     /* ── Timeline Editor ── */
     .timeline-editor-grid {
       display: grid;
@@ -701,6 +755,20 @@
         </p>
         <div class="readwhen-editor-grid" id="readwhen-editor-grid">
           <!-- Message cards populated by JS -->
+        </div>
+      </div>
+
+      <!-- Photo Captions Section -->
+      <div class="admin-add-section" style="margin-top:48px;">
+        <h2 class="admin-section-title">Photo Captions</h2>
+        <p class="admin-section-desc">
+          Add romantic captions that appear when hovering over photos. Leave blank to use default captions.
+        </p>
+        <div class="caption-editor-grid" id="caption-editor-grid">
+          <!-- Caption cards populated by JS -->
+        </div>
+        <div style="text-align:center;margin-top:20px;">
+          <button class="admin-save-btn" id="load-more-captions-btn">Load More Photos</button>
         </div>
       </div>
 

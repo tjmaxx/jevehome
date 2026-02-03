@@ -84,6 +84,31 @@
   var PHOTOS_PER_PAGE = 12;
   var photosLoaded = 0;
   var appInitialized = false;
+  var photoCaptions = {}; // Loaded from config
+
+  // Default romantic captions (used when no custom caption is set)
+  var DEFAULT_CAPTIONS = [
+    "A moment I'll treasure forever",
+    "My heart smiles looking at this",
+    "Pure happiness captured",
+    "Love in its purest form",
+    "This is what forever looks like",
+    "My favorite people in one frame",
+    "Memories we'll never forget",
+    "The best days of our lives",
+    "Where my heart belongs",
+    "Love, laughter, and us",
+    "Every moment with you is a gift",
+    "Our beautiful journey together",
+    "This is my happy place",
+    "The moments that matter most",
+    "Forever grateful for this",
+    "My whole world in one photo",
+    "These are the days we live for",
+    "Nothing but love",
+    "Our story, one photo at a time",
+    "Blessed beyond measure"
+  ];
 
   // ── Expose init as window.initApp ─────────
   // Called by auth.js after successful authentication.
@@ -139,6 +164,14 @@
         var config = {};
         result.data.forEach(function (row) {
           config[row.config_key] = row.config_value;
+        });
+
+        // Load photo captions from config
+        Object.keys(config).forEach(function (key) {
+          if (key.startsWith('caption_')) {
+            var filename = key.replace('caption_', '');
+            photoCaptions[filename] = config[key];
+          }
         });
 
         // Check for gallery_order and reorder PHOTOS
@@ -539,10 +572,18 @@
     var overlay = document.createElement('div');
     overlay.className = 'gallery-overlay';
 
+    // Get caption - custom or random default
+    var caption = photoCaptions[filename] || DEFAULT_CAPTIONS[index % DEFAULT_CAPTIONS.length];
+
+    var captionEl = document.createElement('p');
+    captionEl.className = 'gallery-caption';
+    captionEl.textContent = caption;
+
     var icon = document.createElement('span');
     icon.className = 'gallery-icon';
-    icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+    icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
 
+    overlay.appendChild(captionEl);
     overlay.appendChild(icon);
     item.appendChild(img);
     item.appendChild(overlay);
