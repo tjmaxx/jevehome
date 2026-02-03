@@ -8,85 +8,82 @@
    Supabase site_config table (with hardcoded fallbacks).
    Photos are loaded via Supabase Storage signed URLs
    using getPhotoUrl() / getPhotoUrls() from storage.js.
+   UPDATED: Timeline built dynamically from config.
+   Gallery order can be customized via gallery_order config.
    ============================================ */
 
 (function () {
   'use strict';
 
-  // ── Gallery photo list ──────────────────────
-  // Exclude timeline photos so they only appear in the gallery
-  const TIMELINE_PHOTOS = [
-    'IMG_0133.JPG', 'IMG_2063.JPG', 'IMG_3265.JPG',
-    'IMG_4570.JPG', 'IMG_5503.JPG', 'IMG_6489.JPG', 'IMG_7814.jpg'
-  ];
+  // ── Timeline defaults (2015-2026) ────────────
+  var TIMELINE_DEFAULTS = {
+    2015: {
+      title: 'Where It All Began',
+      desc: 'Jia & Vickey — two hearts found each other, and our love story began. The start of our greatest adventure.'
+    },
+    2016: {
+      title: 'Building Our World',
+      desc: 'Exploring life together, creating memories, and dreaming about the future side by side.'
+    },
+    2017: {
+      title: 'Growing Together',
+      desc: 'Learning, loving, and laying the foundation for the family we would become.'
+    },
+    2018: {
+      title: 'Eric Tang Arrives',
+      desc: 'A tiny miracle joined our family. Our hearts expanded in ways we never imagined possible. Parenthood changed everything beautifully.'
+    },
+    2019: {
+      title: 'Adventures as Three',
+      desc: 'Through every season, we grew stronger. From park days to cozy evenings at home, every moment became precious.'
+    },
+    2020: {
+      title: 'Staying Strong',
+      desc: 'A challenging year brought us closer. Home became our sanctuary, family our strength.'
+    },
+    2021: {
+      title: 'Ella Tang Joins Us',
+      desc: 'Our family became complete with the arrival of our second little one. Four hearts beating as one.'
+    },
+    2022: {
+      title: 'A Family of Four',
+      desc: 'Watching our kids grow together, filling our home with laughter and love.'
+    },
+    2023: {
+      title: 'Making Memories',
+      desc: 'Exploring new places, celebrating milestones — every day is a gift we cherish together.'
+    },
+    2024: {
+      title: 'Stronger Than Ever',
+      desc: 'Nearly a decade of love, growth, and family. Building traditions that will last generations.'
+    },
+    2025: {
+      title: 'Married!',
+      desc: 'Our February wedding — officially sealing our love after years of building a life together.'
+    },
+    2026: {
+      title: '11 Years & Forever',
+      desc: 'Eleven years of love, growth, and family. Here\'s to the next eleven, and all the years after that. Our story is just beginning.'
+    }
+  };
 
-  const ALL_PHOTOS = [
-    '1348AF94-839F-4A01-AA33-FF69AA7E411B-4344-0000035EAE61E1F0_tmp.JPG',
-    '250A8DE1-9FF7-414D-BBE8-367A9D5B6EAC-942-000000C4493DF60A_tmp.JPG',
-    'IMG_0379.JPG','IMG_0386.JPG','IMG_0750.jpg','IMG_0757.jpg',
-    'IMG_1195.JPG','IMG_1205.JPG','IMG_1254.jpg','IMG_1299.JPG',
-    'IMG_1374.JPG','IMG_1553.JPG','IMG_1683.JPG','IMG_1717.JPG',
-    'IMG_1768.JPG','IMG_1776.JPG','IMG_1779.JPG','IMG_1819.JPG',
-    'IMG_1834_2.JPG','IMG_1834.JPG','IMG_1836.JPG','IMG_1837.JPG',
-    'IMG_1911.JPG','IMG_1912.JPG','IMG_1935.JPG','IMG_2014.jpg',
-    'IMG_2064.JPG','IMG_2093.JPG','IMG_2187.JPG',
-    'IMG_2240.JPG','IMG_2241.JPG','IMG_2248.JPG','IMG_2289.JPG',
-    'IMG_2292.JPG','IMG_2333_2.JPG','IMG_2361.JPG','IMG_2425.JPG',
-    'IMG_2600.JPG','IMG_2639.JPG','IMG_2641.JPG','IMG_2813.JPG',
-    'IMG_2821_2.JPG','IMG_2957.JPG','IMG_2958.JPG','IMG_3009.JPG',
-    'IMG_3121.JPG','IMG_3151.JPG','IMG_3168.JPG','IMG_3185_2.JPG',
-    'IMG_3206_2.JPG','IMG_3236.JPG','IMG_3266.jpg','IMG_3273.jpg',
-    'IMG_3276.JPG','IMG_3287.JPG','IMG_3313.jpg','IMG_3350.JPG',
-    'IMG_3357.JPG','IMG_3377.jpg','IMG_3394_2.JPG','IMG_3436.JPG',
-    'IMG_3448.JPG','IMG_3468.JPG','IMG_3470.JPG','IMG_3478.JPG',
-    'IMG_3611.JPG','IMG_3665.JPG','IMG_3701_2.JPG','IMG_3726.JPG',
-    'IMG_3756_2.JPG','IMG_3788.JPG','IMG_3818.JPG','IMG_3837.jpg',
-    'IMG_3854.jpg','IMG_3855.jpg','IMG_3867.JPG','IMG_3868.jpg',
-    'IMG_3921.JPG','IMG_3929.jpg','IMG_3949.JPG','IMG_4027.JPG',
-    'IMG_4128.JPG','IMG_4129.JPG','IMG_4146.JPG','IMG_4154.jpg',
-    'IMG_4198.JPG','IMG_4357.JPG','IMG_4781.JPG',
-    'IMG_4818.jpg','IMG_4910_2.JPG','IMG_5018.JPG','IMG_5067.JPG',
-    'IMG_5080.jpg','IMG_5202_2.JPG','IMG_5225.JPG','IMG_5410.jpg',
-    'IMG_5414.jpg','IMG_5427.jpg','IMG_5453.jpg','IMG_5467.JPG',
-    'IMG_5476.jpg','IMG_5497.jpg','IMG_5536.jpg',
-    'IMG_5596.jpg','IMG_5601.JPG','IMG_5628.JPG','IMG_5629.jpg',
-    'IMG_5668.JPG','IMG_5684.JPG','IMG_5703.jpg','IMG_5718.jpg',
-    'IMG_5723.jpg','IMG_5738.jpg','IMG_5739.JPG','IMG_5746.jpg',
-    'IMG_5772.JPG','IMG_5777.jpg','IMG_5832.jpg','IMG_5845.jpg',
-    'IMG_5884.JPG','IMG_5886.jpg','IMG_5889.JPG','IMG_6026.jpg',
-    'IMG_6041.JPG','IMG_6048.jpg','IMG_6143.jpg','IMG_6195.JPG',
-    'IMG_6207.jpg','IMG_6219.jpg','IMG_6239.JPG','IMG_6240.JPG',
-    'IMG_6302.jpg','IMG_6307.jpg','IMG_6397.JPG','IMG_6412.JPG',
-    'IMG_6432.jpg','IMG_6433.jpg','IMG_6436.jpg','IMG_6437.jpg',
-    'IMG_6490.JPG','IMG_6541.jpg','IMG_6568.jpg',
-    'IMG_6664.JPG','IMG_6665.JPG','IMG_6724.jpg','IMG_6758.jpg',
-    'IMG_6808.JPG','IMG_6818.JPG','IMG_6825.jpg','IMG_6866.JPG',
-    'IMG_6889.jpg','IMG_6900_2.JPG','IMG_6999.jpg','IMG_7009.JPG',
-    'IMG_7083.jpg','IMG_7144.jpg','IMG_7155.jpg','IMG_7162_2.jpg',
-    'IMG_7177_2.jpg','IMG_7268.jpg','IMG_7291_2.jpg','IMG_7387.JPG',
-    'IMG_7391.jpg','IMG_7435.jpg','IMG_7439.jpg','IMG_7458.jpg',
-    'IMG_7470.jpg','IMG_7478.jpg','IMG_7481.jpg','IMG_7561.jpg',
-    'IMG_7687.jpg','IMG_7694.jpg','IMG_7708.jpg','IMG_7735.jpg',
-    'IMG_7746.jpg','IMG_7764.jpg','IMG_7788.jpg',
-    'IMG_7821.jpg','IMG_7824.jpg','IMG_7868.jpg','IMG_7891.jpg',
-    'IMG_7940.jpg','IMG_7943.jpg','IMG_7949.jpg','IMG_8078.jpg',
-    'IMG_9357.jpg','IMG_9599.jpg','LRG_DSC09362.JPG'
-  ];
-
-  // Shuffle photos for variety
+  // ── Gallery photo list (from photo-list.js) ───
+  // Shuffle photos for variety, use gallery_order from config if available
   function shuffle(arr) {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = a[i];
+      a[i] = a[j];
+      a[j] = temp;
     }
     return a;
   }
 
-  const PHOTOS = shuffle(ALL_PHOTOS);
-  const PHOTOS_PER_PAGE = 12;
-  let photosLoaded = 0;
-  let appInitialized = false;
+  var PHOTOS = []; // Will be set from window.ALL_PHOTOS
+  var PHOTOS_PER_PAGE = 12;
+  var photosLoaded = 0;
+  var appInitialized = false;
 
   // ── Expose init as window.initApp ─────────
   // Called by auth.js after successful authentication.
@@ -94,6 +91,11 @@
   window.initApp = function () {
     if (appInitialized) return;
     appInitialized = true;
+
+    // Initialize PHOTOS from window.ALL_PHOTOS
+    if (window.ALL_PHOTOS && window.ALL_PHOTOS.length) {
+      PHOTOS = shuffle(window.ALL_PHOTOS);
+    }
 
     // Load site config from Supabase, then initialize UI
     loadSiteConfig().then(function () {
@@ -118,34 +120,51 @@
   // Supabase is unavailable or not configured.
   function loadSiteConfig() {
     var sb = window.supabaseClient;
-    if (!sb) return Promise.resolve();
+    if (!sb) {
+      buildTimeline({});
+      return Promise.resolve();
+    }
 
     return sb.from('site_config')
       .select('config_key, config_value')
       .then(function (result) {
-        if (result.error || !result.data) return;
+        if (result.error || !result.data) {
+          buildTimeline({});
+          return;
+        }
 
         var config = {};
         result.data.forEach(function (row) {
           config[row.config_key] = row.config_value;
         });
 
-        // Collect all filenames that need signed URLs
-        var configImages = document.querySelectorAll('[data-config-key]');
-        var urlPromises = [];
-
-        // Timeline images: resolve filenames to signed URLs
-        configImages.forEach(function (img) {
-          var key = img.getAttribute('data-config-key');
-          var filename = config[key];
-          if (filename) {
-            urlPromises.push(
-              getPhotoUrl(filename).then(function (url) {
-                if (url) img.src = url;
-              })
-            );
+        // Check for gallery_order and reorder PHOTOS
+        if (config.gallery_order) {
+          try {
+            var order = JSON.parse(config.gallery_order);
+            if (Array.isArray(order) && order.length > 0) {
+              // Build ordered array: photos in order first, then remaining shuffled
+              var ordered = [];
+              var remaining = PHOTOS.slice();
+              order.forEach(function (filename) {
+                var idx = remaining.indexOf(filename);
+                if (idx !== -1) {
+                  ordered.push(filename);
+                  remaining.splice(idx, 1);
+                }
+              });
+              PHOTOS = ordered.concat(remaining);
+            }
+          } catch (e) {
+            // Invalid JSON, ignore
           }
-        });
+        }
+
+        // Build timeline from config
+        buildTimeline(config);
+
+        // Collect all filenames that need signed URLs
+        var urlPromises = [];
 
         // Hero background
         if (config.hero_bg_photo) {
@@ -180,22 +199,102 @@
         return Promise.all(urlPromises);
       })
       .catch(function () {
-        // Silently fall back to hardcoded defaults
+        // Silently fall back to defaults
+        buildTimeline({});
       });
+  }
+
+  // ── Build Timeline dynamically ────────────
+  // Config keys: timeline_YYYY (photo), timeline_YYYY_title, timeline_YYYY_desc
+  function buildTimeline(config) {
+    var container = document.getElementById('timeline-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    var years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+
+    years.forEach(function (year) {
+      var defaults = TIMELINE_DEFAULTS[year] || { title: year.toString(), desc: '' };
+
+      // Get from config or use defaults
+      var photoKey = 'timeline_' + year;
+      var titleKey = 'timeline_' + year + '_title';
+      var descKey = 'timeline_' + year + '_desc';
+
+      var photo = config[photoKey] || '';
+      var title = config[titleKey] || defaults.title;
+      var desc = config[descKey] || defaults.desc;
+
+      // Create timeline item
+      var item = document.createElement('div');
+      item.className = 'timeline-item scroll-reveal';
+
+      var dot = document.createElement('div');
+      dot.className = 'timeline-dot';
+
+      var content = document.createElement('div');
+      content.className = 'timeline-content';
+
+      // Image wrapper
+      var imgWrapper = document.createElement('div');
+      imgWrapper.className = 'timeline-image-wrapper';
+
+      var img = document.createElement('img');
+      img.className = 'timeline-image';
+      img.alt = title;
+      img.loading = 'lazy';
+      img.src = '';
+
+      // Load signed URL for photo if set
+      if (photo && typeof getPhotoUrl === 'function') {
+        getPhotoUrl(photo).then(function (url) {
+          if (url) img.src = url;
+        });
+      }
+
+      imgWrapper.appendChild(img);
+
+      // Text content
+      var textDiv = document.createElement('div');
+      textDiv.className = 'timeline-text';
+
+      var yearSpan = document.createElement('span');
+      yearSpan.className = 'timeline-year';
+      yearSpan.textContent = year;
+
+      var titleH3 = document.createElement('h3');
+      titleH3.className = 'timeline-title';
+      titleH3.textContent = title;
+
+      var descP = document.createElement('p');
+      descP.className = 'timeline-desc';
+      descP.textContent = desc;
+
+      textDiv.appendChild(yearSpan);
+      textDiv.appendChild(titleH3);
+      textDiv.appendChild(descP);
+
+      content.appendChild(imgWrapper);
+      content.appendChild(textDiv);
+
+      item.appendChild(dot);
+      item.appendChild(content);
+      container.appendChild(item);
+    });
   }
 
   // ── Navigation ──────────────────────────────
   function initNav() {
-    const nav = document.getElementById('nav');
-    const toggle = document.getElementById('navToggle');
-    const links = document.getElementById('navLinks');
+    var nav = document.getElementById('nav');
+    var toggle = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
 
     if (!nav || !toggle || !links) return;
 
     // Scroll state
-    let lastScroll = 0;
+    var lastScroll = 0;
     window.addEventListener('scroll', function () {
-      const current = window.scrollY;
+      var current = window.scrollY;
 
       if (current > 80) {
         nav.classList.add('nav-scrolled');
@@ -229,14 +328,14 @@
     });
 
     // Active link tracking
-    const sections = document.querySelectorAll('section[id]');
+    var sections = document.querySelectorAll('section[id]');
     window.addEventListener('scroll', function () {
-      const scrollPos = window.scrollY + 200;
+      var scrollPos = window.scrollY + 200;
       sections.forEach(function (section) {
-        const top = section.offsetTop;
-        const height = section.offsetHeight;
-        const id = section.getAttribute('id');
-        const link = links.querySelector('a[href="#' + id + '"]');
+        var top = section.offsetTop;
+        var height = section.offsetHeight;
+        var id = section.getAttribute('id');
+        var link = links.querySelector('a[href="#' + id + '"]');
         if (link) {
           if (scrollPos >= top && scrollPos < top + height) {
             links.querySelectorAll('a').forEach(function (a) { a.classList.remove('active'); });
@@ -381,7 +480,7 @@
 
   function loadMorePhotos() {
     var grid = document.getElementById('galleryGrid');
-    if (!grid) return;
+    if (!grid || !PHOTOS.length) return;
 
     var start = photosLoaded;
     var end = Math.min(photosLoaded + PHOTOS_PER_PAGE, PHOTOS.length);

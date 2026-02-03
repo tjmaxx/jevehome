@@ -398,6 +398,142 @@
       .admin-config-table { overflow-x: auto; }
       .admin-add-form { flex-direction: column; }
       .admin-login-box { margin: 20px; padding: 28px; }
+      .timeline-editor-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .gallery-order-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+
+    /* ── Timeline Editor ── */
+    .timeline-editor-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .timeline-year-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .timeline-year-card h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--admin-accent);
+      margin-bottom: 12px;
+    }
+
+    .timeline-year-card .admin-field {
+      margin-bottom: 10px;
+    }
+
+    .timeline-year-card .admin-field label {
+      font-size: 0.75rem;
+    }
+
+    .timeline-year-card .admin-field input,
+    .timeline-year-card .admin-field textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .timeline-year-card .admin-field textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .timeline-year-card .admin-field input:focus,
+    .timeline-year-card .admin-field textarea:focus {
+      border-color: var(--admin-accent);
+    }
+
+    .timeline-year-card .timeline-preview {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background: #f5f5f5;
+    }
+
+    .timeline-year-card .admin-save-btn {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    /* ── Gallery Ordering ── */
+    .gallery-order-section {
+      margin-top: 40px;
+    }
+
+    .gallery-order-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+      min-height: 200px;
+      padding: 16px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .gallery-order-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: grab;
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: #f5f5f5;
+    }
+
+    .gallery-order-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .gallery-order-item.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+
+    .gallery-order-item.drag-over {
+      outline: 3px dashed var(--admin-accent);
+    }
+
+    .gallery-order-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-order-item .order-badge {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .gallery-order-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .gallery-order-actions .admin-save-btn {
+      flex: 1;
     }
   </style>
 </head>
@@ -488,6 +624,32 @@
           <button class="admin-add-btn" id="admin-add-btn">Add Entry</button>
         </div>
       </div>
+
+      <!-- Timeline Management Section -->
+      <div class="admin-add-section" style="margin-top:48px;">
+        <h2 class="admin-section-title">Timeline Management</h2>
+        <p class="admin-section-desc">
+          Edit photos, titles, and descriptions for each year in the timeline (2015-2026).
+        </p>
+        <div class="timeline-editor-grid" id="timeline-editor-grid">
+          <!-- Year cards populated by JS -->
+        </div>
+      </div>
+
+      <!-- Gallery Ordering Section -->
+      <div class="admin-add-section gallery-order-section">
+        <h2 class="admin-section-title">Gallery Photo Order</h2>
+        <p class="admin-section-desc">
+          Drag and drop photos to set their display order. The first photos will appear first in the gallery.
+        </p>
+        <div class="gallery-order-grid" id="gallery-order-grid">
+          <!-- Draggable photo items populated by JS -->
+        </div>
+        <div class="gallery-order-actions">
+          <button class="admin-save-btn" id="save-gallery-order-btn">Save Order</button>
+          <button class="admin-save-btn" id="reset-gallery-order-btn" style="background:#e74c3c;color:#fff;">Reset to Random</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -498,6 +660,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/photo-list.js"></script>
   <script src="js/admin.js"></script>
 
 </body>

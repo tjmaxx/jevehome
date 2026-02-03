@@ -1577,53 +1577,84 @@ a {
 
 
 /* =============================================
-   GREETING BAR — Top banner after sign-in
+   FLOATING SIGN-OUT BUTTON — Bottom-right circle
    ============================================= */
-.greeting-bar {
+#sign-out-float {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  bottom: 24px;
+  right: 24px;
   z-index: 1100;
-  background: #2d3436;
-  color: #fff;
-  font-size: 0.85rem;
-  padding: 8px 0;
-}
-
-.greeting-bar-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(45, 52, 54, 0.45);
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  transition: background 0.3s, transform 0.2s;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
-.greeting-text {
-  opacity: 0.9;
+#sign-out-float:hover {
+  background: rgba(45, 52, 54, 0.75);
+  transform: scale(1.1);
 }
 
-.greeting-signout {
-  background: none;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: rgba(255,255,255,0.8);
-  padding: 4px 14px;
-  border-radius: 4px;
+#sign-out-float svg {
+  width: 18px;
+  height: 18px;
+  stroke: rgba(255,255,255,0.85);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =============================================
+   ACCESS RESTRICTED PAGE
+   ============================================= */
+#access-restricted {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--color-bg);
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px;
+}
+
+#access-restricted h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--color-text);
+}
+
+#access-restricted p {
+  font-size: 1.05rem;
+  color: var(--color-text-light);
+  max-width: 420px;
+}
+
+#access-restricted button {
+  padding: 12px 28px;
+  background: #c9a96e;
+  color: #2d3436;
+  border: none;
+  border-radius: 8px;
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: background 0.3s;
 }
 
-.greeting-signout:hover {
-  border-color: #fff;
-  color: #fff;
-}
-
-/* Push the real nav down when greeting bar is visible */
-#app-content .nav {
-  top: 36px;
+#access-restricted button:hover {
+  background: #a88a4e;
 }
 
 

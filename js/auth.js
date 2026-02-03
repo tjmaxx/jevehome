@@ -4,23 +4,29 @@
    Handles sign-in, sign-up, sign-out, and
    session detection. Controls visibility of
    the fake landing page vs. the real content.
+   Added: Email-based access restriction.
    ============================================ */
 
 (function () {
   'use strict';
 
+  // ── Allowed emails (besides admins) ────────
+  var ALLOWED_EMAILS = ['vickeyqian623@gmail.com'];
+
   // ── DOM references ────────────────────────
-  var publicLanding = null;
-  var appContent    = null;
-  var authModal     = null;
-  var greetingBar   = null;
+  var publicLanding     = null;
+  var appContent        = null;
+  var authModal         = null;
+  var signOutFloat      = null;
+  var accessRestricted  = null;
 
   // ── Wait for DOM then bootstrap ───────────
   document.addEventListener('DOMContentLoaded', function () {
-    publicLanding = document.getElementById('public-landing');
-    appContent    = document.getElementById('app-content');
-    authModal     = document.getElementById('auth-modal');
-    greetingBar   = document.getElementById('greeting-bar');
+    publicLanding    = document.getElementById('public-landing');
+    appContent       = document.getElementById('app-content');
+    authModal        = document.getElementById('auth-modal');
+    signOutFloat     = document.getElementById('sign-out-float');
+    accessRestricted = document.getElementById('access-restricted');
 
     bindAuthUI();
     checkSession();
@@ -77,10 +83,18 @@
       });
     }
 
-    // Sign Out button
-    var signOutBtn = document.getElementById('sign-out-btn');
-    if (signOutBtn) {
-      signOutBtn.addEventListener('click', function (e) {
+    // Floating sign-out button
+    if (signOutFloat) {
+      signOutFloat.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleSignOut();
+      });
+    }
+
+    // Sign out from restricted page
+    var restrictedSignOut = document.getElementById('restricted-sign-out-btn');
+    if (restrictedSignOut) {
+      restrictedSignOut.addEventListener('click', function (e) {
         e.preventDefault();
         handleSignOut();
       });
@@ -259,21 +273,24 @@
   // ── View state management ─────────────────
 
   function showPublicLanding() {
-    if (publicLanding) publicLanding.style.display = '';
-    if (appContent)    appContent.style.display = 'none';
-    if (greetingBar)   greetingBar.style.display = 'none';
+    if (publicLanding)    publicLanding.style.display = '';
+    if (appContent)       appContent.style.display = 'none';
+    if (signOutFloat)     signOutFloat.style.display = 'none';
+    if (accessRestricted) accessRestricted.style.display = 'none';
   }
 
-  function onAuthenticated(user) {
-    // Hide fake landing, show real content
-    if (publicLanding) publicLanding.style.display = 'none';
-    if (appContent)    appContent.style.display = '';
+  function showAccessRestricted() {
+    if (publicLanding)    publicLanding.style.display = 'none';
+    if (appContent)       appContent.style.display = 'none';
+    if (signOutFloat)     signOutFloat.style.display = 'none';
+    if (accessRestricted) accessRestricted.style.display = 'flex';
+  }
 
-    // Fetch user profile for display name
-    fetchUserProfile(user.id);
-
-    // Show greeting bar
-    if (greetingBar) greetingBar.style.display = '';
+  function showAppContent() {
+    if (publicLanding)    publicLanding.style.display = 'none';
+    if (appContent)       appContent.style.display = '';
+    if (signOutFloat)     signOutFloat.style.display = 'flex';
+    if (accessRestricted) accessRestricted.style.display = 'none';
 
     // Initialize the real app (gallery, animations, etc.)
     if (typeof window.initApp === 'function') {
@@ -281,24 +298,57 @@
     }
   }
 
+  function onAuthenticated(user) {
+    // Fetch user profile to check role
+    fetchUserProfile(user.id).then(function (profile) {
+      var role = profile.role || '';
+      var email = (user.email || '').toLowerCase();
+
+      // Allow if admin OR in allowed list
+      var isAdmin = role === 'admin';
+      var isAllowed = ALLOWED_EMAILS.some(function (e) {
+        return e.toLowerCase() === email;
+      });
+
+      if (isAdmin || isAllowed) {
+        showAppContent();
+      } else {
+        showAccessRestricted();
+      }
+    }).catch(function () {
+      // On error, still check email allowlist
+      var email = (user.email || '').toLowerCase();
+      var isAllowed = ALLOWED_EMAILS.some(function (e) {
+        return e.toLowerCase() === email;
+      });
+
+      if (isAllowed) {
+        showAppContent();
+      } else {
+        showAccessRestricted();
+      }
+    });
+  }
+
   function fetchUserProfile(userId) {
     var sb = window.supabaseClient;
-    if (!sb) return;
+    if (!sb) return Promise.resolve({ display_name: 'Family Member', role: '' });
 
-    sb.from('users_profile')
+    return sb.from('users_profile')
       .select('display_name, role')
       .eq('id', userId)
       .single()
       .then(function (result) {
-        var name = 'Family Member';
-        if (result.data && result.data.display_name) {
-          name = result.data.display_name;
+        if (result.error || !result.data) {
+          return { display_name: 'Family Member', role: '' };
         }
-        var nameEl = document.getElementById('greeting-name');
-        if (nameEl) nameEl.textContent = name;
+        return {
+          display_name: result.data.display_name || 'Family Member',
+          role: result.data.role || ''
+        };
       })
       .catch(function () {
-        // Silently fail — greeting will show default
+        return { display_name: 'Family Member', role: '' };
       });
   }
 

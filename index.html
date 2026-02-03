@@ -265,14 +265,22 @@
 
 
   <!-- ============================================ -->
-  <!-- GREETING BAR — Shown after authentication    -->
+  <!-- ACCESS RESTRICTED — Shown for non-allowed    -->
+  <!-- email addresses after authentication.        -->
   <!-- ============================================ -->
-  <div class="greeting-bar" id="greeting-bar" style="display:none">
-    <div class="greeting-bar-inner">
-      <span class="greeting-text">Welcome, <strong id="greeting-name">Family Member</strong></span>
-      <button class="greeting-signout" id="sign-out-btn">Sign Out</button>
-    </div>
+  <div id="access-restricted">
+    <h2>Access Restricted</h2>
+    <p>This site is a private family page. Your account does not have access.</p>
+    <button id="restricted-sign-out-btn">Sign Out</button>
   </div>
+
+
+  <!-- ============================================ -->
+  <!-- FLOATING SIGN-OUT — Subtle bottom-right btn  -->
+  <!-- ============================================ -->
+  <button id="sign-out-float" style="display:none" aria-label="Sign out">
+    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+  </button>
 
 
   <!-- ============================================ -->
@@ -315,11 +323,11 @@
           <span class="hero-text">Years of Us</span>
         </h1>
         <p class="hero-subtitle animate-on-load" data-delay="800">
-          A journey of love, laughter, and a beautiful family
+          Jia & Vickey's journey of love, laughter, and a beautiful family
         </p>
         <div class="hero-date animate-on-load" data-delay="1100">
           <span class="hero-date-line"></span>
-          <span>2014 — 2025</span>
+          <span>2015 — 2026</span>
           <span class="hero-date-line"></span>
         </div>
       </div>
@@ -351,7 +359,7 @@
           </div>
           <div class="counter-item scroll-reveal" data-delay="200">
             <span class="counter-number" data-target="2">0</span>
-            <span class="counter-label">Beautiful Kids</span>
+            <span class="counter-label">Eric & Ella</span>
           </div>
           <div class="counter-item scroll-reveal" data-delay="300">
             <span class="counter-number" data-target="1">0</span>
@@ -372,111 +380,8 @@
           <p class="section-subtitle">Every great love story is beautiful, but ours is our favorite</p>
         </div>
 
-        <div class="timeline">
-          <!-- Timeline Item 1 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="Our beginning" class="timeline-image" data-config-key="timeline_2014" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2014</span>
-                <h3 class="timeline-title">Where It All Began</h3>
-                <p class="timeline-desc">Two hearts found each other, and our love story began. The day we said "I do" was the start of our greatest adventure.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timeline Item 2 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="Early years" class="timeline-image" data-config-key="timeline_2015_2017" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2015 — 2017</span>
-                <h3 class="timeline-title">Building Our World</h3>
-                <p class="timeline-desc">The early years of exploring life together, creating memories, and dreaming about the future side by side.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timeline Item 3 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="First child" class="timeline-image" data-config-key="timeline_2018" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2018</span>
-                <h3 class="timeline-title">Our Family Grew</h3>
-                <p class="timeline-desc">A tiny miracle joined our family. Our hearts expanded in ways we never imagined possible. Parenthood changed everything beautifully.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timeline Item 4 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="Growing together" class="timeline-image" data-config-key="timeline_2019_2020" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2019 — 2020</span>
-                <h3 class="timeline-title">Adventures Together</h3>
-                <p class="timeline-desc">Through every season, we grew stronger. From park days to cozy evenings at home, every moment became precious.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timeline Item 5 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="Second child" class="timeline-image" data-config-key="timeline_2021" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2021</span>
-                <h3 class="timeline-title">Double the Love</h3>
-                <p class="timeline-desc">Our family became complete with the arrival of our second little one. Four hearts beating as one.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timeline Item 6 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="Family adventures" class="timeline-image" data-config-key="timeline_2022_2024" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2022 — 2024</span>
-                <h3 class="timeline-title">Making Memories</h3>
-                <p class="timeline-desc">Watching our kids grow, exploring new places, celebrating milestones — every day is a gift we cherish together.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timeline Item 7 -->
-          <div class="timeline-item scroll-reveal">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-image-wrapper">
-                <img src="" alt="11 years" class="timeline-image" data-config-key="timeline_2025" loading="lazy">
-              </div>
-              <div class="timeline-text">
-                <span class="timeline-year">2025</span>
-                <h3 class="timeline-title">11 Years & Forever</h3>
-                <p class="timeline-desc">Eleven years of love, growth, and family. Here's to the next eleven, and all the years after that. Our story is just beginning.</p>
-              </div>
-            </div>
-          </div>
+        <div class="timeline" id="timeline-container">
+          <!-- Timeline items built dynamically by main.js buildTimeline() -->
         </div>
       </div>
     </section>
@@ -533,14 +438,14 @@
     <section class="message-section" id="message">
       <div class="container">
         <div class="message-content scroll-reveal">
-          <p class="message-script">To my love,</p>
+          <p class="message-script">To Vickey, my love,</p>
           <h2 class="message-title">Happy 11th Anniversary</h2>
           <p class="message-body">
             Thank you for 11 incredible years of love, partnership, and the beautiful family we've built together.
-            Every day with you and our kids is a blessing. I wouldn't trade a single moment.
+            Every day with you, Eric, and Ella is a blessing. I wouldn't trade a single moment.
             Here's to forever.
           </p>
-          <p class="message-signature">With all my love</p>
+          <p class="message-signature">With all my love, Jia</p>
           <div class="message-hearts">
             <span>💕</span>
           </div>
@@ -551,7 +456,7 @@
     <footer class="footer">
       <div class="container">
         <p class="footer-text">Made with love by The Tang Family</p>
-        <p class="footer-year">2014 — 2025 | 11 Years of Us</p>
+        <p class="footer-year">2015 — 2026 | 11 Years of Us</p>
       </div>
     </footer>
 
@@ -573,6 +478,9 @@
 
   <!-- Storage helper (signed URLs for private photo bucket) -->
   <script src="js/storage.js"></script>
+
+  <!-- Shared photo list (used by main.js and admin.js) -->
+  <script src="js/photo-list.js"></script>
 
   <!-- Main app logic (gallery, animations — gated behind auth) -->
   <script src="js/main.js"></script>
