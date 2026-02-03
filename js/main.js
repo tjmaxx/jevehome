@@ -291,8 +291,16 @@
     var nav = document.getElementById('nav');
     var toggle = document.getElementById('navToggle');
     var links = document.getElementById('navLinks');
+    var backdrop = document.getElementById('navBackdrop');
 
     if (!nav || !toggle || !links) return;
+
+    function closeMenu() {
+      toggle.classList.remove('active');
+      links.classList.remove('active');
+      if (backdrop) backdrop.classList.remove('active');
+      document.body.classList.remove('nav-open');
+    }
 
     // Scroll state
     var lastScroll = 0;
@@ -316,19 +324,21 @@
 
     // Mobile toggle
     toggle.addEventListener('click', function () {
+      var isOpen = links.classList.toggle('active');
       toggle.classList.toggle('active');
-      links.classList.toggle('active');
-      document.body.classList.toggle('nav-open');
+      if (backdrop) backdrop.classList.toggle('active', isOpen);
+      document.body.classList.toggle('nav-open', isOpen);
     });
 
     // Close menu on link click
     links.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        toggle.classList.remove('active');
-        links.classList.remove('active');
-        document.body.classList.remove('nav-open');
-      });
+      link.addEventListener('click', closeMenu);
     });
+
+    // Close menu on backdrop click
+    if (backdrop) {
+      backdrop.addEventListener('click', closeMenu);
+    }
 
     // Active link tracking
     var sections = document.querySelectorAll('section[id]');
@@ -646,11 +656,12 @@
 
     var clickCount = 0;
     var clickTimer = null;
+    var lastTapTime = 0;
 
     var messages = {
       7: {
         title: 'You found a secret!',
-        text: 'Keep clicking if you want to know more...',
+        text: 'Keep tapping if you want to know more...',
         icon: '✨'
       },
       14: {
@@ -665,8 +676,12 @@
       }
     };
 
-    logo.addEventListener('click', function (e) {
-      // Don't prevent default - let it scroll to hero
+    function handleTap(e) {
+      // Prevent double-firing on touch devices
+      var now = Date.now();
+      if (now - lastTapTime < 100) return;
+      lastTapTime = now;
+
       clickCount++;
 
       // Reset counter after 3 seconds of no clicks
@@ -677,8 +692,17 @@
 
       // Check for milestone
       if (messages[clickCount]) {
+        e.preventDefault();
         showEasterEggMessage(messages[clickCount]);
       }
+    }
+
+    // Support both click and touch
+    logo.addEventListener('click', handleTap);
+    logo.addEventListener('touchend', function (e) {
+      // Prevent ghost click
+      e.preventDefault();
+      handleTap(e);
     });
   }
 
@@ -770,8 +794,10 @@
   }
 
   // ── Konami Code Easter Egg ─────────────────
-  // ↑ ↑ ↓ ↓ ← → ← → B A
+  // Desktop: ↑ ↑ ↓ ↓ ← → ← → B A
+  // Mobile: Tap the "11" hero number 5 times quickly
   function initKonamiCode() {
+    // Desktop keyboard version
     var konamiCode = [
       'ArrowUp', 'ArrowUp',
       'ArrowDown', 'ArrowDown',
@@ -807,6 +833,43 @@
         konamiIndex = 0;
       }
     });
+
+    // Mobile touch version - tap the "11" hero number 5 times
+    var heroNumber = document.querySelector('.hero-number');
+    if (heroNumber) {
+      var tapCount = 0;
+      var tapTimer = null;
+      var lastTapTime = 0;
+
+      function handleHeroTap(e) {
+        var now = Date.now();
+        if (now - lastTapTime < 100) return; // Debounce
+        lastTapTime = now;
+
+        tapCount++;
+
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(function () {
+          tapCount = 0;
+        }, 2000);
+
+        if (tapCount >= 5) {
+          tapCount = 0;
+          clearTimeout(tapTimer);
+          e.preventDefault();
+          triggerKonamiEasterEgg();
+        }
+      }
+
+      heroNumber.addEventListener('click', handleHeroTap);
+      heroNumber.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        handleHeroTap(e);
+      });
+
+      // Make it tappable
+      heroNumber.style.cursor = 'pointer';
+    }
   }
 
   function triggerKonamiEasterEgg() {

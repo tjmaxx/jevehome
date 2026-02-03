@@ -35,7 +35,9 @@
           <li><a href="#jh-portfolio">Portfolio</a></li>
           <li><a href="#jh-about">About</a></li>
           <li><a href="#jh-contact">Contact</a></li>
+          <li class="jh-nav-signin-mobile"><a href="#" data-auth-open>Sign In</a></li>
         </ul>
+        <div class="jh-nav-backdrop" id="jhNavBackdrop"></div>
         <button class="jh-signin-btn" data-auth-open>Sign In</button>
         <button class="jh-nav-toggle" id="jhNavToggle" aria-label="Toggle menu">
           <span></span><span></span><span></span>
@@ -363,7 +365,9 @@
           <li><a href="#story">Our Story</a></li>
           <li><a href="#gallery">Gallery</a></li>
           <li><a href="#message">Message</a></li>
+          <li class="nav-signout-mobile"><a href="#" id="mobile-sign-out-btn">Sign Out</a></li>
         </ul>
+        <div class="nav-backdrop" id="navBackdrop"></div>
       </div>
     </nav>
 
@@ -550,11 +554,30 @@
     (function () {
       var toggle = document.getElementById('jhNavToggle');
       var links = document.getElementById('jhNavLinks');
+      var backdrop = document.getElementById('jhNavBackdrop');
+
+      function closeMenu() {
+        if (links) links.classList.remove('open');
+        if (toggle) toggle.classList.remove('active');
+        if (backdrop) backdrop.classList.remove('open');
+      }
+
       if (toggle && links) {
         toggle.addEventListener('click', function () {
-          links.classList.toggle('open');
+          var isOpen = links.classList.toggle('open');
           toggle.classList.toggle('active');
+          if (backdrop) backdrop.classList.toggle('open', isOpen);
         });
+
+        // Close menu when clicking links
+        links.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', closeMenu);
+        });
+      }
+
+      // Close menu when clicking backdrop
+      if (backdrop) {
+        backdrop.addEventListener('click', closeMenu);
       }
     })();
   </script>

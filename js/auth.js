@@ -91,6 +91,15 @@
       });
     }
 
+    // Mobile nav sign out button
+    var mobileSignOut = document.getElementById('mobile-sign-out-btn');
+    if (mobileSignOut) {
+      mobileSignOut.addEventListener('click', function (e) {
+        e.preventDefault();
+        handleSignOut();
+      });
+    }
+
     // Sign out from restricted page
     var restrictedSignOut = document.getElementById('restricted-sign-out-btn');
     if (restrictedSignOut) {

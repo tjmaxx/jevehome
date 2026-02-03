@@ -859,13 +859,36 @@ a {
     box-shadow: -10px 0 30px rgba(0,0,0,0.1);
   }
 
-  .nav-links.open {
+  .nav-links.active {
     right: 0;
   }
 
   .nav-links a {
     color: var(--color-text) !important;
     font-size: 1.1rem;
+  }
+
+  .nav-signout-mobile {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .nav-signout-mobile a {
+    color: var(--color-accent-dark) !important;
+  }
+
+  /* Nav backdrop */
+  .nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 999;
+  }
+
+  .nav-backdrop.active {
+    display: block;
   }
 
   /* Counter grid */
@@ -1906,6 +1929,30 @@ a {
 
   .jh-signin-btn {
     display: none;
+  }
+
+  .jh-nav-signin-mobile {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .jh-nav-signin-mobile a {
+    color: var(--jh-accent) !important;
+    font-weight: 600;
+  }
+
+  /* Landing nav backdrop */
+  .jh-nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 899;
+  }
+
+  .jh-nav-backdrop.open {
+    display: block;
   }
 
   .jh-services-grid,
