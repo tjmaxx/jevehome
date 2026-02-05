@@ -1391,25 +1391,34 @@
     var sticky = document.getElementById('odowSticky');
     if (!sticky) return;
 
-    // Slide out
-    sticky.classList.remove('slide-in');
-    if (direction === 'next' || direction === 'random') {
-      sticky.classList.add('slide-out-left');
-    } else {
-      sticky.classList.add('slide-out-right');
-    }
+    var isNext = direction === 'next' || direction === 'random';
 
-    // After animation, update content and slide in
+    // Step 1: Fade out current content (to left for next, to right for prev)
+    sticky.classList.remove('slide-in', 'slide-in-prepare', 'slide-in-prepare-left');
+    sticky.classList.add(isNext ? 'slide-out-left' : 'slide-out-right');
+
+    // Step 2: After fade out, update content and position off-screen
     setTimeout(function () {
+      // Update the content
       renderODOW();
-      sticky.classList.remove('slide-out-left', 'slide-out-right');
-      sticky.classList.add('slide-in');
 
-      // Clean up class after animation
-      setTimeout(function () {
-        sticky.classList.remove('slide-in');
-      }, 400);
-    }, 280);
+      // Remove slide-out, add prepare class (positions content off-screen without transition)
+      sticky.classList.remove('slide-out-left', 'slide-out-right');
+      sticky.classList.add(isNext ? 'slide-in-prepare' : 'slide-in-prepare-left');
+
+      // Step 3: Trigger fade in (needs a frame for the browser to apply the prepare position)
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          sticky.classList.remove('slide-in-prepare', 'slide-in-prepare-left');
+          sticky.classList.add('slide-in');
+
+          // Clean up class after animation completes
+          setTimeout(function () {
+            sticky.classList.remove('slide-in');
+          }, 450);
+        });
+      });
+    }, 400);
   }
 
   function startODOWAutoplay() {

@@ -911,29 +911,9 @@ a {
   margin-bottom: 20px;
   text-align: left;
   min-height: 80px;
-  transition: opacity 0.3s ease;
-}
-
-/* Animation for slide effect */
-.odow-sticky.slide-out-left .odow-text,
-.odow-sticky.slide-out-left .odow-date {
-  opacity: 0;
-  transform: translateX(-30px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.odow-sticky.slide-out-right .odow-text,
-.odow-sticky.slide-out-right .odow-date {
-  opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.odow-sticky.slide-in .odow-text,
-.odow-sticky.slide-in .odow-date {
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .odow-date {
@@ -942,7 +922,47 @@ a {
   color: #8a7e78;
   text-align: right;
   font-style: italic;
-  transition: opacity 0.3s ease;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* Animation: fade out to the left */
+.odow-sticky.slide-out-left .odow-text,
+.odow-sticky.slide-out-left .odow-date {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+/* Animation: fade out to the right (for prev button) */
+.odow-sticky.slide-out-right .odow-text,
+.odow-sticky.slide-out-right .odow-date {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+/* Animation: prepare to fade in from right */
+.odow-sticky.slide-in-prepare .odow-text,
+.odow-sticky.slide-in-prepare .odow-date {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: none;
+}
+
+/* Animation: prepare to fade in from left (for prev button) */
+.odow-sticky.slide-in-prepare-left .odow-text,
+.odow-sticky.slide-in-prepare-left .odow-date {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: none;
+}
+
+/* Animation: fade in to center */
+.odow-sticky.slide-in .odow-text,
+.odow-sticky.slide-in .odow-date {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 /* Navigation */
