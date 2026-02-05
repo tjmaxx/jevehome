@@ -1447,11 +1447,14 @@
 
   // ── Voice Easter Egg ─────────────────────────
   // Tap 3 times on Jia, Eric, or Ella to play their voice message
+  // Shows inline speaker icon instead of popup overlay
   var voiceTapCounts = {};
   var voiceTapTimers = {};
   var voiceUrlCache = {};
   var voiceLastTapTime = {};
-  var voiceAudioElement = null; // Single reusable audio element for iOS
+  var voiceAudioElement = null;
+  var voiceActiveElement = null;
+  var voiceOriginalText = '';
 
   function initVoiceEasterEgg() {
     var triggers = document.querySelectorAll('.voice-easter-egg');
@@ -1466,9 +1469,15 @@
     // Preload voice URLs in background
     preloadVoiceUrls();
 
+    // Add CSS for voice animation
+    addVoiceStyles();
+
     triggers.forEach(function (el) {
       var voice = el.getAttribute('data-voice');
       if (!voice) return;
+
+      // Store original text
+      el.setAttribute('data-original-text', el.textContent);
 
       // Initialize tap count for this voice
       if (!voiceTapCounts[voice]) {
@@ -1504,33 +1513,51 @@
         if (voiceTapCounts[voice] >= 3) {
           voiceTapCounts[voice] = 0;
           clearTimeout(voiceTapTimers[voice]);
-
-          // iOS requires audio to be triggered directly from user gesture
-          // So we start playback immediately, even if loading
-          playVoiceMessage(voice);
+          playVoiceInline(voice, el);
         }
       }
 
-      // For iOS: use touchend (not touchstart) to avoid scroll conflicts
+      // For iOS: use touchend to avoid scroll conflicts
       var touchHandled = false;
       el.addEventListener('touchend', function (e) {
         touchHandled = true;
         handleInteraction(e);
-        // Reset after a short delay
         setTimeout(function () { touchHandled = false; }, 300);
       }, { passive: false });
 
-      // Click for desktop (skip if touch already handled)
+      // Click for desktop
       el.addEventListener('click', function (e) {
         if (touchHandled) return;
         handleInteraction(e);
       });
 
-      // Style the element to look tappable
+      // Style the element
       el.style.cursor = 'pointer';
       el.style.transition = 'transform 0.15s ease';
       el.style.webkitTapHighlightColor = 'transparent';
     });
+  }
+
+  function addVoiceStyles() {
+    if (document.getElementById('voice-easter-egg-styles')) return;
+
+    var style = document.createElement('style');
+    style.id = 'voice-easter-egg-styles';
+    style.textContent =
+      '@keyframes voicePulse {' +
+      '  0%, 100% { transform: scale(1); }' +
+      '  50% { transform: scale(1.2); }' +
+      '}' +
+      '.voice-playing {' +
+      '  display: inline-flex;' +
+      '  align-items: center;' +
+      '  gap: 4px;' +
+      '  color: #c8907e !important;' +
+      '}' +
+      '.voice-playing .voice-icon {' +
+      '  animation: voicePulse 0.8s ease-in-out infinite;' +
+      '}';
+    document.head.appendChild(style);
   }
 
   function preloadVoiceUrls() {
@@ -1541,7 +1568,7 @@
       var filename = voice + '.m4a';
       sb.storage
         .from('photos')
-        .createSignedUrl(filename, 3600) // 1 hour expiry
+        .createSignedUrl(filename, 3600)
         .then(function (result) {
           if (result.data && result.data.signedUrl) {
             voiceUrlCache[voice] = result.data.signedUrl;
@@ -1551,53 +1578,64 @@
     });
   }
 
-  function playVoiceMessage(voice) {
+  function playVoiceInline(voice, element) {
     var sb = window.supabaseClient;
     if (!sb || !voiceAudioElement) return;
 
-    // Show overlay immediately
-    showVoiceOverlay(voice, !voiceUrlCache[voice]);
+    // Stop any currently playing audio and restore previous element
+    stopVoicePlayback();
+
+    // Store reference to active element
+    voiceActiveElement = element;
+    voiceOriginalText = element.getAttribute('data-original-text') || element.textContent;
+
+    // Show speaker icon with animation
+    showVoiceIcon(element, true);
 
     // If URL is cached, play immediately
     if (voiceUrlCache[voice]) {
-      playAudioDirectly(voiceUrlCache[voice], voice);
+      playAudioInline(voiceUrlCache[voice]);
       return;
     }
 
     // Otherwise fetch URL and play
     var filename = voice + '.m4a';
-
-    // Get signed URL from Supabase Storage
     sb.storage
       .from('photos')
       .createSignedUrl(filename, 3600)
       .then(function (result) {
         if (result.error || !result.data || !result.data.signedUrl) {
           console.error('Failed to get voice URL:', result.error);
-          hideVoiceOverlay();
+          restoreVoiceElement();
           return;
         }
-
         voiceUrlCache[voice] = result.data.signedUrl;
-        playAudioDirectly(result.data.signedUrl, voice);
+        playAudioInline(result.data.signedUrl);
       })
       .catch(function (err) {
         console.error('Error loading voice:', err);
-        hideVoiceOverlay();
+        restoreVoiceElement();
       });
   }
 
-  function playAudioDirectly(url, voice) {
-    if (!voiceAudioElement) return;
+  function showVoiceIcon(element, isLoading) {
+    element.classList.add('voice-playing');
+    element.innerHTML =
+      '<span class="voice-icon">' + (isLoading ? '⏳' : '🔊') + '</span>' +
+      '<span class="voice-text">' + voiceOriginalText + '</span>';
+  }
 
-    // Update overlay to show playing
-    showVoiceOverlay(voice, false);
+  function playAudioInline(url) {
+    if (!voiceAudioElement || !voiceActiveElement) return;
 
-    // Stop any currently playing audio
+    // Update icon to playing
+    showVoiceIcon(voiceActiveElement, false);
+
+    // Stop and reset
     voiceAudioElement.pause();
     voiceAudioElement.currentTime = 0;
 
-    // Set new source and play
+    // Set source and play
     voiceAudioElement.src = url;
     voiceAudioElement.load();
 
@@ -1605,134 +1643,38 @@
 
     if (playPromise !== undefined) {
       playPromise.then(function () {
-        // Audio started playing
+        // Playing successfully
       }).catch(function (err) {
         console.error('Audio play failed:', err);
-        // On iOS, show a message to tap again
-        showVoiceOverlay(voice, false, 'Tap the screen to play');
+        restoreVoiceElement();
       });
     }
 
     voiceAudioElement.onended = function () {
-      hideVoiceOverlay();
+      restoreVoiceElement();
     };
 
     voiceAudioElement.onerror = function () {
       console.error('Audio error');
-      hideVoiceOverlay();
+      restoreVoiceElement();
     };
   }
 
-  function showVoiceOverlay(voice, isLoading, customMessage) {
-    // Remove existing overlay
-    hideVoiceOverlay();
-
-    var names = {
-      jia: 'Jia',
-      eric: 'Eric',
-      ella: 'Ella'
-    };
-
-    var emojis = {
-      jia: '👨',
-      eric: '👦',
-      ella: '👧'
-    };
-
-    var overlay = document.createElement('div');
-    overlay.id = 'voice-overlay';
-    overlay.style.cssText =
-      'position:fixed;inset:0;z-index:10002;' +
-      'background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);' +
-      '-webkit-backdrop-filter:blur(10px);' +
-      'display:flex;align-items:center;justify-content:center;' +
-      'opacity:0;transition:opacity 0.3s ease;';
-
-    var content = document.createElement('div');
-    content.style.cssText =
-      'text-align:center;color:#fff;padding:40px;';
-
-    var emoji = document.createElement('div');
-    emoji.style.cssText = 'font-size:4rem;margin-bottom:20px;animation:voicePulse 1s ease infinite;';
-    emoji.textContent = emojis[voice] || '🎵';
-
-    var text = document.createElement('p');
-    text.style.cssText =
-      'font-family:"Playfair Display",Georgia,serif;' +
-      'font-size:1.5rem;margin-bottom:10px;';
-
-    if (customMessage) {
-      text.textContent = customMessage;
-    } else if (isLoading) {
-      text.textContent = 'Loading...';
-    } else {
-      text.textContent = 'Message from ' + (names[voice] || voice);
+  function stopVoicePlayback() {
+    if (voiceAudioElement) {
+      voiceAudioElement.pause();
+      voiceAudioElement.currentTime = 0;
     }
-
-    var hint = document.createElement('p');
-    hint.style.cssText = 'font-size:0.9rem;opacity:0.7;margin-top:15px;';
-    hint.textContent = isLoading ? '' : 'Tap anywhere to close';
-
-    content.appendChild(emoji);
-    content.appendChild(text);
-    content.appendChild(hint);
-    overlay.appendChild(content);
-    document.body.appendChild(overlay);
-
-    // Add pulse animation
-    var style = document.createElement('style');
-    style.id = 'voice-overlay-style';
-    style.textContent = '@keyframes voicePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }';
-    document.head.appendChild(style);
-
-    // Animate in
-    requestAnimationFrame(function () {
-      overlay.style.opacity = '1';
-    });
-
-    // Close/play handler
-    if (!isLoading) {
-      var hasInteracted = false;
-
-      function handleOverlayTap(e) {
-        e.preventDefault();
-
-        // If audio is paused (iOS blocked autoplay), try to play on tap
-        if (voiceAudioElement && voiceAudioElement.paused && voiceAudioElement.src && !hasInteracted) {
-          hasInteracted = true;
-          voiceAudioElement.play().catch(function () {
-            hideVoiceOverlay();
-          });
-          return;
-        }
-
-        // Otherwise close and stop audio
-        if (voiceAudioElement) {
-          voiceAudioElement.pause();
-          voiceAudioElement.currentTime = 0;
-        }
-        hideVoiceOverlay();
-      }
-
-      overlay.addEventListener('click', handleOverlayTap);
-      overlay.addEventListener('touchend', handleOverlayTap);
-    }
+    restoreVoiceElement();
   }
 
-  function hideVoiceOverlay() {
-    var overlay = document.getElementById('voice-overlay');
-    var style = document.getElementById('voice-overlay-style');
-
-    if (overlay) {
-      overlay.style.opacity = '0';
-      setTimeout(function () {
-        overlay.remove();
-      }, 300);
+  function restoreVoiceElement() {
+    if (voiceActiveElement && voiceOriginalText) {
+      voiceActiveElement.classList.remove('voice-playing');
+      voiceActiveElement.textContent = voiceOriginalText;
     }
-
-    if (style) {
-      style.remove();
-    }
+    voiceActiveElement = null;
+    voiceOriginalText = '';
   }
 
 })();
