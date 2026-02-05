@@ -1059,6 +1059,26 @@ a {
 
 
 /* =============================================
+   VOICE EASTER EGG
+   ============================================= */
+.voice-easter-egg {
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.2s ease;
+  display: inline-block;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.voice-easter-egg:hover {
+  color: var(--color-accent);
+}
+
+.voice-easter-egg:active {
+  transform: scale(0.95);
+}
+
+
+/* =============================================
    MESSAGE / FOOTER SECTION
    ============================================= */
 .message-section {

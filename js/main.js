@@ -141,6 +141,7 @@
     initKonamiCode();
     initReadWhen();
     initODOW();
+    initVoiceEasterEgg();
   }
 
   // ── Load site config from Supabase ────────
@@ -1432,6 +1433,210 @@
     if (odowAutoplayTimer) {
       clearInterval(odowAutoplayTimer);
       odowAutoplayTimer = null;
+    }
+  }
+
+  // ── Voice Easter Egg ─────────────────────────
+  // Tap 3 times on Jia, Eric, or Ella to play their voice message
+  var voiceTapCounts = {};
+  var voiceTapTimers = {};
+  var voiceAudioCache = {};
+
+  function initVoiceEasterEgg() {
+    var triggers = document.querySelectorAll('.voice-easter-egg');
+    if (triggers.length === 0) return;
+
+    triggers.forEach(function (el) {
+      var voice = el.getAttribute('data-voice');
+      if (!voice) return;
+
+      // Initialize tap count for this voice
+      if (!voiceTapCounts[voice]) {
+        voiceTapCounts[voice] = 0;
+      }
+
+      // Handle both click and touch
+      function handleTap(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        voiceTapCounts[voice]++;
+
+        // Reset counter after 2 seconds of no taps
+        clearTimeout(voiceTapTimers[voice]);
+        voiceTapTimers[voice] = setTimeout(function () {
+          voiceTapCounts[voice] = 0;
+        }, 2000);
+
+        // Visual feedback - subtle pulse
+        el.style.transform = 'scale(1.1)';
+        setTimeout(function () {
+          el.style.transform = '';
+        }, 150);
+
+        // Check for 3 taps
+        if (voiceTapCounts[voice] >= 3) {
+          voiceTapCounts[voice] = 0;
+          clearTimeout(voiceTapTimers[voice]);
+          playVoiceMessage(voice);
+        }
+      }
+
+      el.addEventListener('click', handleTap);
+      el.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        handleTap(e);
+      });
+
+      // Style the element to look tappable
+      el.style.cursor = 'pointer';
+      el.style.transition = 'transform 0.15s ease';
+    });
+  }
+
+  function playVoiceMessage(voice) {
+    var sb = window.supabaseClient;
+    if (!sb) return;
+
+    // Show loading indicator
+    showVoiceOverlay(voice, true);
+
+    // Get signed URL for the audio file
+    var filename = voice + '.m4a';
+
+    // Check cache first
+    if (voiceAudioCache[voice]) {
+      playAudioWithOverlay(voiceAudioCache[voice], voice);
+      return;
+    }
+
+    // Get signed URL from Supabase Storage
+    sb.storage
+      .from('photos') // Same bucket as photos
+      .createSignedUrl(filename, 300) // 5 min expiry
+      .then(function (result) {
+        if (result.error || !result.data || !result.data.signedUrl) {
+          console.error('Failed to get voice URL:', result.error);
+          hideVoiceOverlay();
+          return;
+        }
+
+        var audio = new Audio(result.data.signedUrl);
+        voiceAudioCache[voice] = audio;
+        playAudioWithOverlay(audio, voice);
+      })
+      .catch(function (err) {
+        console.error('Error loading voice:', err);
+        hideVoiceOverlay();
+      });
+  }
+
+  function playAudioWithOverlay(audio, voice) {
+    showVoiceOverlay(voice, false);
+
+    audio.play().then(function () {
+      // Audio started playing
+    }).catch(function (err) {
+      console.error('Audio play failed:', err);
+      hideVoiceOverlay();
+    });
+
+    audio.onended = function () {
+      hideVoiceOverlay();
+    };
+
+    audio.onerror = function () {
+      hideVoiceOverlay();
+    };
+  }
+
+  function showVoiceOverlay(voice, isLoading) {
+    // Remove existing overlay
+    hideVoiceOverlay();
+
+    var names = {
+      jia: 'Jia',
+      eric: 'Eric',
+      ella: 'Ella'
+    };
+
+    var emojis = {
+      jia: '👨',
+      eric: '👦',
+      ella: '👧'
+    };
+
+    var overlay = document.createElement('div');
+    overlay.id = 'voice-overlay';
+    overlay.style.cssText =
+      'position:fixed;inset:0;z-index:10002;' +
+      'background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);' +
+      'display:flex;align-items:center;justify-content:center;' +
+      'opacity:0;transition:opacity 0.3s ease;';
+
+    var content = document.createElement('div');
+    content.style.cssText =
+      'text-align:center;color:#fff;padding:40px;';
+
+    var emoji = document.createElement('div');
+    emoji.style.cssText = 'font-size:4rem;margin-bottom:20px;animation:voicePulse 1s ease infinite;';
+    emoji.textContent = emojis[voice] || '🎵';
+
+    var text = document.createElement('p');
+    text.style.cssText =
+      'font-family:"Playfair Display",Georgia,serif;' +
+      'font-size:1.5rem;margin-bottom:10px;';
+    text.textContent = isLoading ? 'Loading...' : 'Playing message from ' + (names[voice] || voice);
+
+    var hint = document.createElement('p');
+    hint.style.cssText = 'font-size:0.9rem;opacity:0.7;';
+    hint.textContent = isLoading ? '' : 'Tap anywhere to close';
+
+    content.appendChild(emoji);
+    content.appendChild(text);
+    content.appendChild(hint);
+    overlay.appendChild(content);
+    document.body.appendChild(overlay);
+
+    // Add pulse animation
+    var style = document.createElement('style');
+    style.id = 'voice-overlay-style';
+    style.textContent = '@keyframes voicePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }';
+    document.head.appendChild(style);
+
+    // Animate in
+    requestAnimationFrame(function () {
+      overlay.style.opacity = '1';
+    });
+
+    // Close on tap (if not loading)
+    if (!isLoading) {
+      overlay.addEventListener('click', function () {
+        // Stop any playing audio
+        Object.keys(voiceAudioCache).forEach(function (key) {
+          if (voiceAudioCache[key]) {
+            voiceAudioCache[key].pause();
+            voiceAudioCache[key].currentTime = 0;
+          }
+        });
+        hideVoiceOverlay();
+      });
+    }
+  }
+
+  function hideVoiceOverlay() {
+    var overlay = document.getElementById('voice-overlay');
+    var style = document.getElementById('voice-overlay-style');
+
+    if (overlay) {
+      overlay.style.opacity = '0';
+      setTimeout(function () {
+        overlay.remove();
+      }, 300);
+    }
+
+    if (style) {
+      style.remove();
     }
   }
 
