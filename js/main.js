@@ -1441,6 +1441,7 @@
   var voiceTapCounts = {};
   var voiceTapTimers = {};
   var voiceAudioCache = {};
+  var voiceLastTapTime = {};
 
   function initVoiceEasterEgg() {
     var triggers = document.querySelectorAll('.voice-easter-egg');
@@ -1453,12 +1454,15 @@
       // Initialize tap count for this voice
       if (!voiceTapCounts[voice]) {
         voiceTapCounts[voice] = 0;
+        voiceLastTapTime[voice] = 0;
       }
 
-      // Handle both click and touch
+      // Handle tap with debounce to prevent double-firing on mobile
       function handleTap(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        // Debounce - ignore taps within 100ms of last tap
+        var now = Date.now();
+        if (now - voiceLastTapTime[voice] < 100) return;
+        voiceLastTapTime[voice] = now;
 
         voiceTapCounts[voice]++;
 
@@ -1482,8 +1486,14 @@
         }
       }
 
-      el.addEventListener('click', handleTap);
-      el.addEventListener('touchend', function (e) {
+      // Use touchstart for mobile (more responsive than touchend)
+      el.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        handleTap(e);
+      }, { passive: false });
+
+      // Click for desktop
+      el.addEventListener('click', function (e) {
         e.preventDefault();
         handleTap(e);
       });
