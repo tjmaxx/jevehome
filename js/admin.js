@@ -21,8 +21,12 @@
     { key: 'miss', emoji: '🫂', label: 'Miss me' }
   ];
 
-  // ── Timeline defaults (2015-2026) ────────────
+  // ── Timeline defaults (2011-2026) ────────────
   var TIMELINE_DEFAULTS = {
+    2011: { title: 'Where It All Began', desc: 'Two students crossed paths at Virginia Tech.' },
+    2012: { title: 'Long Distance Love', desc: 'Miles apart — Virginia Tech and Washington DC.' },
+    2013: { title: 'Together Again', desc: 'Finally reunited! No more counting down the days.' },
+    2014: { title: 'Building Our Future', desc: 'A year of dreams taking shape.' },
     2015: { title: 'Married!', desc: 'Our February wedding — the beginning of forever.' },
     2016: { title: 'Eric Tang Arrives', desc: 'A tiny miracle joined our family.' },
     2017: { title: 'Adventures as Three', desc: 'Exploring life together as a family.' },
@@ -451,7 +455,7 @@
 
     configPromise.then(function (config) {
       grid.innerHTML = '';
-      var years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+      var years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
 
       years.forEach(function (year) {
         var defaults = TIMELINE_DEFAULTS[year] || { title: '', desc: '' };
