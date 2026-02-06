@@ -15,8 +15,24 @@
 (function () {
   'use strict';
 
-  // ── Timeline defaults (2015-2026) ────────────
+  // ── Timeline defaults (2011-2026) ────────────
   var TIMELINE_DEFAULTS = {
+    2011: {
+      title: 'Where It All Began',
+      desc: 'Two students crossed paths at Virginia Tech. A chance meeting that would change everything. Little did we know, this was the start of our forever.'
+    },
+    2012: {
+      title: 'Long Distance Love',
+      desc: 'Miles apart — Virginia Tech and Washington DC. Distance tested us, but our love only grew stronger. Every visit, every call, every moment apart made our hearts fonder.'
+    },
+    2013: {
+      title: 'Together Again',
+      desc: 'Finally reunited! No more counting down the days. Being together felt like coming home. Our love had weathered the distance and emerged even stronger.'
+    },
+    2014: {
+      title: 'Building Our Future',
+      desc: 'A year of dreams taking shape. Late night talks about forever, planning our lives together. We knew we were ready for the next chapter.'
+    },
     2015: {
       title: 'Married!',
       desc: 'Jia & Vickey — our February wedding marked the beginning of forever. Two hearts, one journey.'
@@ -249,7 +265,7 @@
     if (!container) return;
 
     container.innerHTML = '';
-    var years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+    var years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
 
     years.forEach(function (year) {
       var defaults = TIMELINE_DEFAULTS[year] || { title: year.toString(), desc: '' };
