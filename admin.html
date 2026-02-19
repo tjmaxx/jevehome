@@ -830,6 +830,292 @@
     .gallery-order-actions .admin-save-btn {
       flex: 1;
     }
+
+    /* ── AI Assistant Admin ── */
+    .agent-admin-section {
+      margin-top: 40px;
+    }
+
+    .agent-admin-tabs {
+      display: flex;
+      gap: 4px;
+      margin-top: 20px;
+      border-bottom: 2px solid var(--admin-border);
+      padding-bottom: 0;
+    }
+
+    .agent-admin-tab {
+      padding: 8px 18px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #888;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .agent-admin-tab:hover { color: var(--admin-accent); }
+
+    .agent-admin-tab.active {
+      color: var(--admin-accent);
+      border-bottom-color: var(--admin-accent);
+    }
+
+    .agent-admin-panel {
+      display: none;
+      padding: 24px 0 0;
+    }
+
+    .agent-admin-panel.active { display: block; }
+
+    .agent-field {
+      margin-bottom: 20px;
+    }
+
+    .agent-field label {
+      display: block;
+      font-weight: 500;
+      font-size: 0.875rem;
+      margin-bottom: 6px;
+      color: var(--admin-text);
+    }
+
+    .agent-field .field-desc {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .agent-field input[type="text"],
+    .agent-field input[type="number"],
+    .agent-field select,
+    .agent-field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--admin-border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      background: #fff;
+      color: var(--admin-text);
+      transition: border-color 0.15s;
+    }
+
+    .agent-field input:focus,
+    .agent-field select:focus,
+    .agent-field textarea:focus {
+      outline: none;
+      border-color: var(--admin-accent);
+    }
+
+    .agent-field textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Tools tab */
+    .agent-tools-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .agent-tool-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .agent-tool-info { flex: 1; }
+
+    .agent-tool-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .agent-tool-desc {
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .agent-tool-toggle {
+      position: relative;
+      width: 42px;
+      height: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .agent-tool-toggle input { opacity: 0; width: 0; height: 0; }
+
+    .agent-tool-toggle .slider {
+      position: absolute;
+      inset: 0;
+      background: #ccc;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .agent-tool-toggle .slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .agent-tool-toggle input:checked + .slider { background: var(--admin-accent); }
+    .agent-tool-toggle input:checked + .slider::before { transform: translateX(18px); }
+
+    /* Quick prompts tab */
+    .agent-prompts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .agent-prompt-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .agent-prompt-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+    .agent-prompt-fields input {
+      padding: 8px 10px;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      width: 100%;
+    }
+
+    .agent-prompt-fields input:focus { outline: none; border-color: var(--admin-accent); }
+
+    .agent-prompt-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #bbb;
+      font-size: 1.1rem;
+      padding: 4px;
+      margin-top: 2px;
+      transition: color 0.15s;
+    }
+
+    .agent-prompt-delete:hover { color: var(--admin-error); }
+
+    .agent-add-prompt-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #f0f0f0;
+      border: 1px dashed var(--admin-border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #666;
+      transition: background 0.15s;
+    }
+
+    .agent-add-prompt-btn:hover { background: #e8e8e8; }
+
+    /* Theme tab */
+    .agent-theme-presets {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .agent-theme-preset {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: border-color 0.15s;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .agent-theme-preset:hover { border-color: var(--admin-accent); }
+    .agent-theme-preset.active { border-color: var(--admin-accent); }
+
+    .agent-theme-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .agent-theme-custom {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .agent-color-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+    }
+
+    .agent-color-field input[type="color"] {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--admin-border);
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 2px;
+      background: #fff;
+    }
+
+    .agent-save-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .agent-save-status {
+      font-size: 0.82rem;
+      color: var(--admin-success);
+      align-self: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .agent-save-status.visible { opacity: 1; }
   </style>
 </head>
 <body>
@@ -1006,6 +1292,103 @@
           <button class="admin-save-btn" id="reset-gallery-order-btn" style="background:#e74c3c;color:#fff;">Reset to Random</button>
         </div>
       </div>
+
+      <!-- AI Assistant Section -->
+      <div class="admin-add-section agent-admin-section" id="section-agent">
+        <h2 class="admin-section-title">AI Assistant</h2>
+        <p class="admin-section-desc">Configure the chat assistant shown on the anniversary site.</p>
+
+        <!-- Tabs -->
+        <div class="agent-admin-tabs">
+          <button class="agent-admin-tab active" data-tab="model">Model &amp; Prompt</button>
+          <button class="agent-admin-tab" data-tab="tools">Tools</button>
+          <button class="agent-admin-tab" data-tab="prompts">Quick Prompts</button>
+          <button class="agent-admin-tab" data-tab="theme">Theme</button>
+        </div>
+
+        <!-- Tab: Model & Prompt -->
+        <div class="agent-admin-panel active" id="agent-tab-model">
+          <div class="agent-field">
+            <label for="agent-model">Model</label>
+            <select id="agent-model">
+              <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (Recommended)</option>
+              <option value="gemini-2.0-flash-001">gemini-2.0-flash-001</option>
+              <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+            </select>
+          </div>
+          <div class="agent-field">
+            <label for="agent-system-prompt">System Prompt</label>
+            <div class="field-desc">Override the default system prompt. Leave blank to use the built-in prompt about this anniversary site.</div>
+            <textarea id="agent-system-prompt" rows="6" placeholder="Optional: enter a custom system prompt…"></textarea>
+          </div>
+          <div class="agent-field">
+            <label for="agent-welcome-message">Welcome Message</label>
+            <input type="text" id="agent-welcome-message" placeholder="Hi! I'm your personal assistant…">
+          </div>
+          <div class="agent-field">
+            <label for="agent-max-history">Max History Messages: <span id="agent-max-history-val">20</span></label>
+            <div class="field-desc">How many past messages to include in each request for short-term memory.</div>
+            <input type="range" id="agent-max-history" min="2" max="50" step="2" value="20"
+              style="width:100%;accent-color:var(--admin-accent);">
+          </div>
+          <div class="agent-save-row">
+            <button class="admin-save-btn" id="agent-save-model-btn">Save</button>
+            <span class="agent-save-status" id="agent-save-model-status">Saved!</span>
+          </div>
+        </div>
+
+        <!-- Tab: Tools -->
+        <div class="agent-admin-panel" id="agent-tab-tools">
+          <div class="agent-tools-list" id="agent-tools-list">
+            <!-- Rendered by agent-admin.js -->
+          </div>
+          <div class="agent-save-row">
+            <button class="admin-save-btn" id="agent-save-tools-btn">Save</button>
+            <span class="agent-save-status" id="agent-save-tools-status">Saved!</span>
+          </div>
+        </div>
+
+        <!-- Tab: Quick Prompts -->
+        <div class="agent-admin-panel" id="agent-tab-prompts">
+          <p style="font-size:0.85rem;color:#777;margin-bottom:16px;">
+            These buttons appear above the chat input for first-time visitors.
+          </p>
+          <div class="agent-prompts-list" id="agent-prompts-list">
+            <!-- Rendered by agent-admin.js -->
+          </div>
+          <button class="agent-add-prompt-btn" id="agent-add-prompt-btn">+ Add Prompt</button>
+          <div class="agent-save-row">
+            <button class="admin-save-btn" id="agent-save-prompts-btn">Save</button>
+            <span class="agent-save-status" id="agent-save-prompts-status">Saved!</span>
+          </div>
+        </div>
+
+        <!-- Tab: Theme -->
+        <div class="agent-admin-panel" id="agent-tab-theme">
+          <p style="font-size:0.85rem;color:#777;margin-bottom:16px;">
+            Choose a preset or set custom colors for the chat widget.
+          </p>
+          <div class="agent-theme-presets" id="agent-theme-presets">
+            <!-- Rendered by agent-admin.js -->
+          </div>
+          <div class="agent-theme-custom">
+            <div class="agent-color-field">
+              <label for="agent-color-primary">Primary Color</label>
+              <input type="color" id="agent-color-primary" value="#c8907e">
+            </div>
+            <div class="agent-color-field">
+              <label for="agent-color-dark">Dark Variant</label>
+              <input type="color" id="agent-color-dark" value="#a86f5e">
+            </div>
+          </div>
+          <div class="agent-save-row">
+            <button class="admin-save-btn" id="agent-save-theme-btn">Save</button>
+            <span class="agent-save-status" id="agent-save-theme-status">Saved!</span>
+          </div>
+        </div>
+
+      </div><!-- /section-agent -->
+
     </div>
   </div>
 
@@ -1018,6 +1401,7 @@
   <script src="js/storage.js"></script>
   <script src="js/photo-list.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/agent-admin.js"></script>
 
 </body>
 </html>

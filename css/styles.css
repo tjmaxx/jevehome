@@ -2361,3 +2361,521 @@ a {
     gap: 16px;
   }
 }
+
+
+/* =============================================
+   AGENT CHAT WIDGET
+   Floating AI assistant — authenticated area only.
+   Positioned above the sign-out float (bottom-right).
+   Theme colors use CSS custom properties that are
+   overridden at runtime by agent.js based on admin config.
+   ============================================= */
+
+/* ── Runtime theme variables (defaults match warm preset) ── */
+#agent-panel, #agent-trigger {
+  --agent-primary:      #c8907e;
+  --agent-primary-dark: #a86f5e;
+}
+
+/* ── Trigger button ── */
+#agent-trigger {
+  position: fixed;
+  bottom: 74px;
+  right: 24px;
+  z-index: 1100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: color-mix(in srgb, var(--agent-primary) 65%, transparent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+#agent-trigger:hover {
+  background: color-mix(in srgb, var(--agent-primary-dark) 85%, transparent);
+  transform: scale(1.1);
+}
+
+#agent-trigger svg {
+  width: 18px;
+  height: 18px;
+  stroke: rgba(255,255,255,0.9);
+  fill: none;
+}
+
+/* Pulse ring when loading */
+#agent-trigger.agent-trigger--loading::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--agent-primary);
+  animation: agentPulse 1.2s ease-in-out infinite;
+}
+
+/* Active state (panel open) */
+#agent-trigger.agent-trigger--active {
+  background: color-mix(in srgb, var(--agent-primary-dark) 85%, transparent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--agent-primary) 40%, transparent);
+}
+
+@keyframes agentPulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ── Chat panel ── */
+.agent-panel {
+  position: fixed;
+  bottom: 124px;    /* above the trigger button */
+  right: 24px;
+  z-index: 1099;
+  width: 340px;
+  height: 480px;
+  max-height: calc(100vh - 160px);
+  border-radius: 20px;
+  background: var(--color-bg);
+  box-shadow: 0 8px 40px rgba(58, 46, 40, 0.18), 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid color-mix(in srgb, var(--agent-primary) 20%, transparent);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Hidden by default — toggled by JS class */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.97);
+  transform-origin: bottom right;
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s cubic-bezier(0.34,1.4,0.64,1);
+}
+
+.agent-panel.agent-panel--open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* ── Panel header ── */
+.agent-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px 10px 16px;
+  background: linear-gradient(135deg, var(--agent-primary), var(--agent-primary-dark));
+  flex-shrink: 0;
+}
+
+.agent-panel-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-white);
+  letter-spacing: 0.01em;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Header action buttons (history, new chat, close) */
+.agent-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.agent-header-btn {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  border-radius: 6px;
+  color: rgba(255,255,255,0.9);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.agent-header-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.agent-header-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.agent-header-btn--active {
+  background: rgba(255,255,255,0.35);
+}
+
+.agent-close-btn {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  border-radius: 6px;
+  color: rgba(255,255,255,0.9);
+  width: 28px;
+  height: 28px;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.agent-close-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* ── Messages area ── */
+.agent-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+.agent-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.agent-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.agent-messages::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--agent-primary) 30%, transparent);
+  border-radius: 2px;
+}
+
+/* ── Message bubbles ── */
+.agent-msg {
+  display: flex;
+  max-width: 88%;
+}
+
+.agent-msg--user {
+  align-self: flex-end;
+}
+
+.agent-msg--assistant {
+  align-self: flex-start;
+}
+
+.agent-bubble {
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.agent-msg--user .agent-bubble {
+  background: var(--agent-primary);
+  color: var(--color-white);
+  border-bottom-right-radius: 4px;
+}
+
+.agent-msg--assistant .agent-bubble {
+  background: var(--color-bg-warm);
+  color: var(--color-text);
+  border: 1px solid color-mix(in srgb, var(--agent-primary) 15%, transparent);
+  border-bottom-left-radius: 4px;
+}
+
+.agent-bubble--error {
+  background: #fde8e8 !important;
+  color: #c0392b !important;
+  border-color: rgba(192, 57, 43, 0.2) !important;
+}
+
+/* ── Typing indicator ── */
+.agent-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.agent-typing span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--agent-primary);
+  animation: agentTypingDot 1.2s ease-in-out infinite;
+}
+
+.agent-typing span:nth-child(2) { animation-delay: 0.2s; }
+.agent-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes agentTypingDot {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.4; }
+  30%            { transform: translateY(-5px); opacity: 1;   }
+}
+
+/* ── Input row ── */
+.agent-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid color-mix(in srgb, var(--agent-primary) 15%, transparent);
+  background: var(--color-bg);
+  flex-shrink: 0;
+}
+
+.agent-input {
+  flex: 1;
+  resize: none;
+  border: 1px solid color-mix(in srgb, var(--agent-primary) 30%, transparent);
+  border-radius: 12px;
+  padding: 9px 13px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-bg-warm);
+  line-height: 1.5;
+  min-height: 38px;
+  max-height: 120px;
+  overflow-y: auto;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.agent-input:focus {
+  border-color: var(--agent-primary);
+}
+
+.agent-input::placeholder {
+  color: var(--color-text-light);
+}
+
+.agent-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.agent-send-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: var(--agent-primary);
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.agent-send-btn:hover:not(:disabled) {
+  background: var(--agent-primary-dark);
+  transform: scale(1.05);
+}
+
+.agent-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.agent-send-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ── History sidebar (slides over message area) ── */
+.agent-history-sidebar {
+  position: absolute;
+  inset: 0;
+  top: 48px; /* below header */
+  background: var(--color-bg);
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-history-sidebar.open {
+  transform: translateX(0);
+}
+
+.agent-history-sidebar::-webkit-scrollbar { width: 4px; }
+.agent-history-sidebar::-webkit-scrollbar-track { background: transparent; }
+.agent-history-sidebar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--agent-primary) 25%, transparent);
+  border-radius: 2px;
+}
+
+.agent-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 8px;
+  flex-shrink: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--agent-primary) 12%, transparent);
+}
+
+.agent-history-header span {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.agent-history-new-btn {
+  background: var(--agent-primary);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.agent-history-new-btn:hover {
+  background: var(--agent-primary-dark);
+}
+
+.agent-history-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-light);
+  font-size: 0.82rem;
+  padding: 24px;
+  text-align: center;
+}
+
+.agent-conv-group {
+  padding: 8px 0 2px;
+}
+
+.agent-conv-group-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-light);
+  padding: 4px 14px 6px;
+}
+
+.agent-conv-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 8px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 0;
+}
+
+.agent-conv-item:hover {
+  background: color-mix(in srgb, var(--agent-primary) 8%, transparent);
+}
+
+.agent-conv-item.active {
+  background: color-mix(in srgb, var(--agent-primary) 12%, transparent);
+}
+
+.agent-conv-title {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.agent-conv-date {
+  font-size: 0.7rem;
+  color: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+.agent-conv-delete {
+  background: none;
+  border: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+  opacity: 0;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  transition: opacity 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.agent-conv-item:hover .agent-conv-delete { opacity: 1; }
+.agent-conv-delete:hover { color: #c0392b; }
+
+/* ── Quick prompts ── */
+.agent-quick-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 14px 0;
+  flex-shrink: 0;
+}
+
+.agent-quick-prompt-btn {
+  background: color-mix(in srgb, var(--agent-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--agent-primary) 25%, transparent);
+  border-radius: 14px;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.agent-quick-prompt-btn:hover {
+  background: color-mix(in srgb, var(--agent-primary) 18%, transparent);
+  border-color: var(--agent-primary);
+}
+
+/* ── Mobile adjustments ── */
+@media (max-width: 480px) {
+  .agent-panel {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    bottom: 120px;
+    border-radius: 16px;
+  }
+
+  #agent-trigger {
+    right: 12px;
+    bottom: 72px;
+  }
+}

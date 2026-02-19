@@ -278,6 +278,48 @@
 
 
   <!-- ============================================ -->
+  <!-- AGENT CHAT — AI assistant widget             -->
+  <!-- Visible only after authentication.           -->
+  <!-- ============================================ -->
+  <button id="agent-trigger" style="display:none" aria-label="Chat with assistant">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+  </button>
+
+  <div id="agent-panel" class="agent-panel" aria-label="AI Assistant">
+    <div class="agent-panel-header">
+      <span class="agent-panel-title">Ask me anything ✨</span>
+      <div class="agent-header-actions">
+        <!-- History toggle -->
+        <button id="agent-history-btn" class="agent-header-btn" aria-label="Conversation history" title="History">
+          <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-4"/><path d="M3 3v4h4"/></svg>
+        </button>
+        <!-- New chat -->
+        <button id="agent-new-chat-btn" class="agent-header-btn" aria-label="New conversation" title="New chat">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="agent-close-btn" aria-label="Close assistant">&times;</button>
+      </div>
+    </div>
+    <div class="agent-messages" id="agent-messages"></div>
+    <div class="agent-input-row">
+      <textarea
+        id="agent-input"
+        class="agent-input"
+        placeholder="Ask about our story..."
+        rows="1"
+        maxlength="4000"
+      ></textarea>
+      <button id="agent-send" class="agent-send-btn" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
   <!-- FLOATING SIGN-OUT — Subtle bottom-right btn  -->
   <!-- ============================================ -->
   <button id="sign-out-float" style="display:none" aria-label="Sign out">
@@ -600,6 +642,9 @@
 
   <!-- Main app logic (gallery, animations — gated behind auth) -->
   <script src="js/main.js"></script>
+
+  <!-- AI chat widget (authenticated area only) -->
+  <script src="js/agent.js"></script>
 
   <!-- Landing page mobile nav toggle -->
   <script>
