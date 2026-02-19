@@ -4,3 +4,4 @@
 node_modules/
 photos/
 not needed/
+supabase/.temp/

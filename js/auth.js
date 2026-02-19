@@ -10,8 +10,10 @@
 (function () {
   'use strict';
 
-  // ── Allowed emails (besides admins) ────────
-  var ALLOWED_EMAILS = ['vickeyqian623@gmail.com'];
+  // ── Access is granted by role in users_profile table ───────────────────────
+  // Roles 'admin' and 'family' are allowed in. Manage access via Supabase
+  // Dashboard → Table Editor → users_profile, or via the admin panel.
+  // No emails are hardcoded here — keep personal data out of source code.
 
   // ── DOM references ────────────────────────
   var publicLanding     = null;
@@ -311,31 +313,16 @@
     // Fetch user profile to check role
     fetchUserProfile(user.id).then(function (profile) {
       var role = profile.role || '';
-      var email = (user.email || '').toLowerCase();
 
-      // Allow if admin OR in allowed list
-      var isAdmin = role === 'admin';
-      var isAllowed = ALLOWED_EMAILS.some(function (e) {
-        return e.toLowerCase() === email;
-      });
-
-      if (isAdmin || isAllowed) {
+      // Allow if role is 'admin' or 'family'
+      if (role === 'admin' || role === 'family') {
         showAppContent();
       } else {
         showAccessRestricted();
       }
     }).catch(function () {
-      // On error, still check email allowlist
-      var email = (user.email || '').toLowerCase();
-      var isAllowed = ALLOWED_EMAILS.some(function (e) {
-        return e.toLowerCase() === email;
-      });
-
-      if (isAllowed) {
-        showAppContent();
-      } else {
-        showAccessRestricted();
-      }
+      // Profile fetch failed — deny access to be safe
+      showAccessRestricted();
     });
   }
 
