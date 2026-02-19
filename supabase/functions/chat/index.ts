@@ -24,68 +24,85 @@ const CHAT_TIMEOUT_MS = 120_000; // 2 minutes
 
 // ── Default system prompt (used when admin hasn't set a custom one) ────────────
 
-const DEFAULT_SYSTEM_PROMPT = `You are a warm, loving assistant embedded in Jia & Vickey's private anniversary website — a site they built to celebrate over 11 years of marriage.
+const DEFAULT_SYSTEM_PROMPT = `You are a warm, loving assistant embedded in a private anniversary website — a site built to celebrate a couple's journey of love, laughter, and family.
 
 ABOUT THE SITE:
-The site is presented to outsiders as "Jeve Home", a fictional interior design studio. But once logged in, it reveals the real content: a heartfelt anniversary website for Jia & Vickey, complete with:
+The site is presented to outsiders as "Jeve Home", a fictional interior design studio. But once logged in, it reveals the real content: a heartfelt anniversary website complete with:
 - A yearly timeline of milestones and memories (2011–2026)
 - A private photo gallery of their life together
 - "One Day One Word" — a section where they write one loving word to each other each day
 - A final message section filled with love letters
 
-ABOUT JIA & VICKEY:
-- They have been together for over 11 years and married since 2015
-- Their anniversary site is a labor of love built to surprise and cherish each other
-- They share a home and a life built on kindness, humor, and deep affection
-
 YOUR ROLE:
-- Answer questions about their love story, the timeline, photos, or site sections warmly and affectionately
+- Answer questions about the couple's love story, the timeline, photos, site sections, and family warmly and affectionately
 - Help with general questions as a knowledgeable, caring assistant
 - Keep responses concise and heartfelt
 - If asked about interior design (the fake company), play along lightheartedly
-- Speak with warmth, as if you are a trusted friend of the couple
+- Speak with warmth, as if you are a trusted friend of the family
 
 Be conversational, loving, and helpful. You are part of something special.`;
 
-// Timeline context injected when the timeline_context tool is enabled
-const TIMELINE_CONTEXT = `
+// Timeline context injected when the timeline_context tool is enabled.
+// These are the default descriptions from the site (same as main.js TIMELINE_DEFAULTS).
+// Admin-overridden entries from site_config are merged in at runtime by buildTimelineContext().
+const TIMELINE_DEFAULTS: Record<number, { title: string; desc: string }> = {
+  2011: { title: 'Where It All Began',    desc: 'Two students crossed paths at Virginia Tech. A chance meeting that would change everything. Little did we know, this was the start of our forever.' },
+  2012: { title: 'Long Distance Love',    desc: 'Miles apart — Virginia Tech and Washington DC. Distance tested us, but our love only grew stronger. Every visit, every call, every moment apart made our hearts fonder.' },
+  2013: { title: 'Together Again',        desc: 'Finally reunited! No more counting down the days. Being together felt like coming home. Our love had weathered the distance and emerged even stronger.' },
+  2014: { title: 'Building Our Future',   desc: 'A year of dreams taking shape. Late night talks about forever, planning our lives together. We knew we were ready for the next chapter.' },
+  2015: { title: 'Married!',              desc: 'Their February wedding marked the beginning of forever. Two hearts, one journey.' },
+  2016: { title: 'Eric Tang Arrives',     desc: 'A tiny miracle joined the family. Their hearts expanded in ways they never imagined possible. Parenthood changed everything beautifully.' },
+  2017: { title: 'Adventures as Three',   desc: 'Exploring life together as a family, creating memories, and watching Eric discover the world.' },
+  2018: { title: 'Growing Together',      desc: 'Learning, loving, and building the foundation for their growing family.' },
+  2019: { title: 'Ella Tang Joins Us',    desc: 'The family became complete with the arrival of their second little one. Four hearts beating as one.' },
+  2020: { title: 'Staying Strong',        desc: 'A challenging year brought them closer. Home became their sanctuary, family their strength.' },
+  2021: { title: 'A Family of Four',      desc: 'Watching their kids grow together, filling their home with laughter and love.' },
+  2022: { title: 'Making Memories',       desc: 'From park days to cozy evenings at home, every moment became precious.' },
+  2023: { title: 'Exploring New Places',  desc: 'Family adventures near and far — every day is a gift they cherish together.' },
+  2024: { title: 'Stronger Than Ever',    desc: 'Nearly a decade of love, growth, and family. Building traditions that will last generations.' },
+  2025: { title: 'A Decade of Love',      desc: 'Ten incredible years together. Looking back at how far they\'ve come, grateful for every moment.' },
+  2026: { title: '11 Years & Forever',    desc: 'Eleven years of marriage, love, and family. Here\'s to the next eleven, and all the years after that.' },
+};
 
-ANNIVERSARY TIMELINE (key milestones):
-- 2011: Where it all began — they first met and fell in love
-- 2012: Growing closer — deepening their connection
-- 2013: Adventures together — exploring life as a couple
-- 2014: Building a future — serious commitment, planning ahead
-- 2015: Marriage — they tied the knot and began their married life
-- 2016: First year of marriage — learning and growing together
-- 2017: New adventures — building their shared home and routines
-- 2018: Deepening bonds — travel, milestones, cherished memories
-- 2019: Together through everything — supporting each other
-- 2020: Resilience — navigating challenges hand in hand
-- 2021: Renewal — rediscovering joy and each other
-- 2022: Flourishing — professionally and personally thriving
-- 2023: Gratitude — reflecting on how far they've come
-- 2024: A decade+ — celebrating ten-plus years of love
-- 2025: Still going strong — deeper love than ever
-- 2026: Anniversary site launch — this very site, a gift of love`;
+// Builds the timeline context string, merging DB overrides over defaults.
+function buildTimelineContext(siteConfig: Record<string, string>): string {
+  const years = Object.keys(TIMELINE_DEFAULTS).map(Number).sort();
+  const lines = years.map(year => {
+    const def = TIMELINE_DEFAULTS[year];
+    const title = siteConfig[`timeline_${year}_title`] || def.title;
+    const desc  = siteConfig[`timeline_${year}_desc`]  || def.desc;
+    return `- ${year}: ${title} — ${desc}`;
+  });
+  return '\n\nANNIVERSARY TIMELINE (year by year):\n' + lines.join('\n');
+}
 
 // ── Config loader ─────────────────────────────────────────────────────────────
 
 interface AgentConfig {
   model: string;
   systemPrompt: string;
+  siteContext: string;
   maxHistory: number;
   enabledTools: string[];
+  siteConfig: Record<string, string>; // timeline overrides from site_config table
 }
 
 async function loadConfig(serviceClient: ReturnType<typeof createClient>): Promise<AgentConfig> {
   try {
-    const { data } = await serviceClient
-      .from('agent_config')
-      .select('key, value');
+    // Load agent_config and site_config in parallel
+    const [agentRes, siteRes] = await Promise.all([
+      serviceClient.from('agent_config').select('key, value'),
+      serviceClient.from('site_config').select('config_key, config_value'),
+    ]);
 
     const map: Record<string, string> = {};
-    if (data) {
-      for (const row of data) map[row.key] = row.value;
+    if (agentRes.data) {
+      for (const row of agentRes.data) map[row.key] = row.value;
+    }
+
+    const siteConfig: Record<string, string> = {};
+    if (siteRes.data) {
+      for (const row of siteRes.data) siteConfig[row.config_key] = row.config_value;
     }
 
     const enabledTools: string[] = (() => {
@@ -95,12 +112,14 @@ async function loadConfig(serviceClient: ReturnType<typeof createClient>): Promi
     return {
       model:        map.model || DEFAULT_MODEL,
       systemPrompt: map.system_prompt || '',
+      siteContext:  map.site_context  || '',
       maxHistory:   parseInt(map.max_history || '20', 10),
       enabledTools,
+      siteConfig,
     };
   } catch (e) {
-    console.error('[Config] Failed to load agent_config:', e);
-    return { model: DEFAULT_MODEL, systemPrompt: '', maxHistory: 20, enabledTools: [] };
+    console.error('[Config] Failed to load config:', e);
+    return { model: DEFAULT_MODEL, systemPrompt: '', siteContext: '', maxHistory: 20, enabledTools: [], siteConfig: {} };
   }
 }
 
@@ -113,12 +132,18 @@ function buildSystemPrompt(config: AgentConfig): string {
 
   let prompt = base;
 
+  // Append site context (family/couple details) — always included when set by admin
+  if (config.siteContext.trim()) {
+    prompt += '\n\nSITE CONTEXT (about the family and couple):\n' + config.siteContext.trim();
+  }
+
+  // Append full timeline with DB overrides merged in
   if (includeTimeline) {
-    prompt += TIMELINE_CONTEXT;
+    prompt += buildTimelineContext(config.siteConfig);
   }
 
   if (!allowGeneral) {
-    prompt += '\n\nIMPORTANT: Keep all responses focused on Jia & Vickey\'s anniversary site, their love story, and the site\'s features. Politely redirect off-topic questions.';
+    prompt += '\n\nIMPORTANT: Keep all responses focused on this anniversary site, their love story, and the site\'s features. Politely redirect off-topic questions.';
   }
 
   return prompt;

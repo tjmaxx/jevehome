@@ -1317,9 +1317,14 @@
             </select>
           </div>
           <div class="agent-field">
+            <label for="agent-site-context">Site Context</label>
+            <div class="field-desc">Private family/couple details injected into every conversation. This is stored only in the database — never in the source code. Include names, family members, key facts, etc.</div>
+            <textarea id="agent-site-context" rows="8" placeholder="e.g. The couple's names are Jia & Vickey. They have two kids: Eric (born 2016) and Ella (born 2019)…"></textarea>
+          </div>
+          <div class="agent-field">
             <label for="agent-system-prompt">System Prompt</label>
-            <div class="field-desc">Override the default system prompt. Leave blank to use the built-in prompt about this anniversary site.</div>
-            <textarea id="agent-system-prompt" rows="6" placeholder="Optional: enter a custom system prompt…"></textarea>
+            <div class="field-desc">Override the default system prompt. Leave blank to use the built-in prompt. Site Context above is always appended automatically.</div>
+            <textarea id="agent-system-prompt" rows="5" placeholder="Optional: enter a custom system prompt…"></textarea>
           </div>
           <div class="agent-field">
             <label for="agent-welcome-message">Welcome Message</label>
